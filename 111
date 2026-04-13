@@ -1,12 +1,8 @@
-ChatConstants = {}
 Players = game:GetService("Players")
 RunService = game:GetService("RunService")
 TweenService = game:GetService("TweenService")
 HttpService = game:GetService("HttpService")
 UserInputService = game:GetService("UserInputService")
-
-UI_Elements = {}
-_G.ThirdGenChat_UI_Elements = UI_Elements
 
 LocalPlayer = Players.LocalPlayer
 PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
@@ -103,33 +99,7 @@ VIOLATION_WINDOW_SECONDS = 3600
 violationStateByName = {}
 
 FORBIDDEN_WORDS = {
-    "傻�?,
-    "傻b",
-    "sb",
-    "nmsl",
-    "cnm",
-    "操你�?,
-	"煞笔",
-	"沙币",
-	"shabi",
-    "草泥�?,
-    "草你�?,
-    "你妈�?,
-    "你妈�?,
-    "妈�?,
-    "妈b",
-    "日你�?,
-    "去死",
-    "死妈",
-    "死全�?,
-    "脑残",
-    "废物",
-    "垃圾",
-    "狗东�?,
-    "你妈死了",
-    "fuck",
-    "fuk",
-    "fck",
+    "shit",
     "shit"
 }
 
@@ -185,15 +155,15 @@ end
 
 local function formatMuteDuration(seconds)
     if seconds >= 86400 then
-        return "一�?
+        return "一天"
     end
     if seconds >= 1800 then
         return "半个小时"
     end
     if seconds >= 600 then
-        return "十分�?
+        return "十分钟"
     end
-    return "五分�?
+    return "五分钟"
 end
 
 local function colorToString(c)
@@ -339,7 +309,7 @@ local function bubbleStyleToString(style)
     return ""
 end
 
-ChatConstants.dynamicBubbleDefs = {
+local dynamicBubbleDefs = {
     { colors = { Color3.fromRGB(80, 150, 255), Color3.fromRGB(255, 140, 200), Color3.fromRGB(255, 230, 120) }, speed = 1.25 },
     { colors = { Color3.fromRGB(80, 210, 210), Color3.fromRGB(160, 120, 255), Color3.fromRGB(255, 140, 200) }, speed = 1.15 },
     { colors = { Color3.fromRGB(255, 170, 80), Color3.fromRGB(255, 80, 80), Color3.fromRGB(255, 230, 120) }, speed = 1.35 },
@@ -361,7 +331,7 @@ local function animateBubbleGradient(gradient, animId)
     if not gradient or not gradient.Parent then
         return
     end
-    local def = ChatConstants.dynamicBubbleDefs[tonumber(animId) or 0]
+    local def = dynamicBubbleDefs[tonumber(animId) or 0]
     local speed = (def and tonumber(def.speed)) or 1.2
     task.spawn(function()
         local start = os.clock()
@@ -379,7 +349,7 @@ local addUIStroke
 local addStrokeGradient
 local animateStrokeGradient
 
-ChatConstants.bubbleBorderDefs = {
+local bubbleBorderDefs = {
     [1] = {
         thickness = 2,
         transparency = 0.05,
@@ -517,7 +487,7 @@ local function applyBubbleBorderToFrame(frame, borderId)
     if not borderId or borderId <= 0 then
         return
     end
-    local def = ChatConstants.bubbleBorderDefs[borderId]
+    local def = bubbleBorderDefs[borderId]
     if not def then
         return
     end
@@ -527,19 +497,19 @@ local function applyBubbleBorderToFrame(frame, borderId)
     animateStrokeGradient(stroke, def.speed)
 end
 
-ChatConstants.avatarBorderDefs = {
-    [1] = { thickness = 2, transparency = 0.06, speed = 26, gradient = ChatConstants.bubbleBorderDefs[1] and ChatConstants.bubbleBorderDefs[1].gradient },
-    [2] = { thickness = 2, transparency = 0.07, speed = 22, gradient = ChatConstants.bubbleBorderDefs[2] and ChatConstants.bubbleBorderDefs[2].gradient },
-    [3] = { thickness = 2, transparency = 0.06, speed = 28, gradient = ChatConstants.bubbleBorderDefs[3] and ChatConstants.bubbleBorderDefs[3].gradient },
-    [4] = { thickness = 2, transparency = 0.07, speed = 30, gradient = ChatConstants.bubbleBorderDefs[4] and ChatConstants.bubbleBorderDefs[4].gradient },
-    [5] = { thickness = 2, transparency = 0.06, speed = 24, gradient = ChatConstants.bubbleBorderDefs[6] and ChatConstants.bubbleBorderDefs[6].gradient },
-    [6] = { thickness = 2, transparency = 0.07, speed = 20, gradient = ChatConstants.bubbleBorderDefs[7] and ChatConstants.bubbleBorderDefs[7].gradient },
-    [7] = { thickness = 2, transparency = 0.06, speed = 32, gradient = ChatConstants.bubbleBorderDefs[9] and ChatConstants.bubbleBorderDefs[9].gradient },
-    [8] = { thickness = 2, transparency = 0.07, speed = 18, gradient = ChatConstants.bubbleBorderDefs[12] and ChatConstants.bubbleBorderDefs[12].gradient },
-    [9] = { thickness = 2, transparency = 0.06, speed = 24, gradient = ChatConstants.bubbleBorderDefs[5] and ChatConstants.bubbleBorderDefs[5].gradient },
-    [10] = { thickness = 2, transparency = 0.07, speed = 34, gradient = ChatConstants.bubbleBorderDefs[8] and ChatConstants.bubbleBorderDefs[8].gradient },
-    [11] = { thickness = 2, transparency = 0.06, speed = 20, gradient = ChatConstants.bubbleBorderDefs[10] and ChatConstants.bubbleBorderDefs[10].gradient },
-    [12] = { thickness = 2, transparency = 0.07, speed = 28, gradient = ChatConstants.bubbleBorderDefs[11] and ChatConstants.bubbleBorderDefs[11].gradient },
+local avatarBorderDefs = {
+    [1] = { thickness = 2, transparency = 0.06, speed = 26, gradient = bubbleBorderDefs[1] and bubbleBorderDefs[1].gradient },
+    [2] = { thickness = 2, transparency = 0.07, speed = 22, gradient = bubbleBorderDefs[2] and bubbleBorderDefs[2].gradient },
+    [3] = { thickness = 2, transparency = 0.06, speed = 28, gradient = bubbleBorderDefs[3] and bubbleBorderDefs[3].gradient },
+    [4] = { thickness = 2, transparency = 0.07, speed = 30, gradient = bubbleBorderDefs[4] and bubbleBorderDefs[4].gradient },
+    [5] = { thickness = 2, transparency = 0.06, speed = 24, gradient = bubbleBorderDefs[6] and bubbleBorderDefs[6].gradient },
+    [6] = { thickness = 2, transparency = 0.07, speed = 20, gradient = bubbleBorderDefs[7] and bubbleBorderDefs[7].gradient },
+    [7] = { thickness = 2, transparency = 0.06, speed = 32, gradient = bubbleBorderDefs[9] and bubbleBorderDefs[9].gradient },
+    [8] = { thickness = 2, transparency = 0.07, speed = 18, gradient = bubbleBorderDefs[12] and bubbleBorderDefs[12].gradient },
+    [9] = { thickness = 2, transparency = 0.06, speed = 24, gradient = bubbleBorderDefs[5] and bubbleBorderDefs[5].gradient },
+    [10] = { thickness = 2, transparency = 0.07, speed = 34, gradient = bubbleBorderDefs[8] and bubbleBorderDefs[8].gradient },
+    [11] = { thickness = 2, transparency = 0.06, speed = 20, gradient = bubbleBorderDefs[10] and bubbleBorderDefs[10].gradient },
+    [12] = { thickness = 2, transparency = 0.07, speed = 28, gradient = bubbleBorderDefs[11] and bubbleBorderDefs[11].gradient },
     [13] = {
         thickness = 2,
         transparency = 0.06,
@@ -569,7 +539,7 @@ ChatConstants.avatarBorderDefs = {
     },
 }
 
-ChatConstants.avatarBorderSolidColors = {
+local avatarBorderSolidColors = {
     Color3.fromRGB(80, 150, 255),
     Color3.fromRGB(255, 255, 255),
     Color3.fromRGB(255, 230, 120),
@@ -596,7 +566,7 @@ local function applyAvatarBorderToFrame(frame, borderId)
     if not borderId or borderId <= 0 then
         return
     end
-    local def = ChatConstants.avatarBorderDefs[borderId]
+    local def = avatarBorderDefs[borderId]
     if def and def.gradient then
         local stroke = addUIStroke(frame, Color3.fromRGB(255, 255, 255), def.thickness or 2, def.transparency or 0.06)
         stroke.Name = "AvatarBorder"
@@ -605,11 +575,11 @@ local function applyAvatarBorderToFrame(frame, borderId)
         return
     end
     local solidIndex = nil
-    if borderId >= 101 and borderId <= (100 + #ChatConstants.avatarBorderSolidColors) then
+    if borderId >= 101 and borderId <= (100 + #avatarBorderSolidColors) then
         solidIndex = borderId - 100
     end
     if solidIndex then
-        local c = ChatConstants.avatarBorderSolidColors[solidIndex]
+        local c = avatarBorderSolidColors[solidIndex]
         if c then
             local stroke = addUIStroke(frame, c, 2, 0.06)
             stroke.Name = "AvatarBorder"
@@ -1025,30 +995,30 @@ function ThirdGenChat_ListLocalImages(folderName)
     return out
 end
 
-ChatConstants.backgroundGradient = ColorSequence.new(Color3.fromRGB(40, 42, 54), Color3.fromRGB(76, 82, 102))
-ChatConstants.strokeGradient = ColorSequence.new{
+local backgroundGradient = ColorSequence.new(Color3.fromRGB(40, 42, 54), Color3.fromRGB(76, 82, 102))
+local strokeGradient = ColorSequence.new{
     ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
     ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 255, 255)),
     ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 60, 60)),
     ColorSequenceKeypoint.new(0.75, Color3.fromRGB(255, 255, 255)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 60, 60))
 }
-ChatConstants.accentGradient = ColorSequence.new(accentColorLight, accentColorDark)
-ChatConstants.softPurpleColor = Color3.fromRGB(176, 150, 255)
-ChatConstants.softPurpleLight = Color3.fromRGB(200, 178, 255)
-ChatConstants.softPurpleDark = Color3.fromRGB(140, 115, 235)
-ChatConstants.softPurpleGradient = ColorSequence.new(ChatConstants.softPurpleLight, ChatConstants.softPurpleDark)
+local accentGradient = ColorSequence.new(accentColorLight, accentColorDark)
+local softPurpleColor = Color3.fromRGB(176, 150, 255)
+local softPurpleLight = Color3.fromRGB(200, 178, 255)
+local softPurpleDark = Color3.fromRGB(140, 115, 235)
+local softPurpleGradient = ColorSequence.new(softPurpleLight, softPurpleDark)
 
-ChatConstants.softOrangeColor = Color3.fromRGB(255, 176, 90)
+local softOrangeColor = Color3.fromRGB(255, 176, 90)
 local softOrangeLight = Color3.fromRGB(255, 200, 140)
-ChatConstants.softOrangeDark = Color3.fromRGB(235, 132, 60)
-ChatConstants.softOrangeGradient = ColorSequence.new(softOrangeLight, ChatConstants.softOrangeDark)
+local softOrangeDark = Color3.fromRGB(235, 132, 60)
+local softOrangeGradient = ColorSequence.new(softOrangeLight, softOrangeDark)
 
-ChatConstants.softInputColor = Color3.fromRGB(236, 220, 200)
-ChatConstants.softInputDark = Color3.fromRGB(220, 200, 175)
-ChatConstants.softInputGradient = ColorSequence.new(ChatConstants.softInputColor, ChatConstants.softInputDark)
-ChatConstants.softInputTextColor = Color3.fromRGB(45, 40, 40)
-ChatConstants.softInputPlaceholderColor = Color3.fromRGB(120, 100, 85)
+local softInputColor = Color3.fromRGB(236, 220, 200)
+local softInputDark = Color3.fromRGB(220, 200, 175)
+local softInputGradient = ColorSequence.new(softInputColor, softInputDark)
+local softInputTextColor = Color3.fromRGB(45, 40, 40)
+local softInputPlaceholderColor = Color3.fromRGB(120, 100, 85)
 
 local function createMainGui()
     if getgenv then
@@ -1157,7 +1127,7 @@ end
 
 local function addButtonStroke(button, rotation, transparency)
     local stroke = addUIStroke(button, Color3.fromRGB(255, 255, 255), 1.1, transparency or 0.4)
-    addStrokeGradient(stroke, ChatConstants.strokeGradient, rotation or 180)
+    addStrokeGradient(stroke, strokeGradient, rotation or 180)
     return stroke
 end
 
@@ -1377,7 +1347,7 @@ local function createButton(parent, text, size, position, isPrimary)
     button.AutoButtonColor = false
     button.Parent = parent
     addUICorner(button, UDim.new(0, 6))
-    addUIGradient(button, isPrimary and ChatConstants.accentGradient or ChatConstants.backgroundGradient, 68)
+    addUIGradient(button, isPrimary and accentGradient or backgroundGradient, 68)
     addButtonStroke(button, 180, 0.35)
     local originalTransparency = button.BackgroundTransparency
     button.MouseEnter:Connect(function()
@@ -1400,8 +1370,8 @@ local function createTextBox(parent, placeholder, size, position)
     container.Parent = parent
     addUICorner(container, UDim.new(0, 6))
     local containerStroke = addUIStroke(container, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(containerStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(container, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(containerStroke, strokeGradient, 180)
+    addUIGradient(container, backgroundGradient, 68)
     local textBox = Instance.new("TextBox")
     textBox.Name = "Input"
     textBox.Size = UDim2.new(1, -16, 1, 0)
@@ -1429,20 +1399,52 @@ local muteList = {}
 local muteIssuer = {}
 local messageWindowStart = 0
 local messageCountInWindow = 0
-local ADMIN_USERS_LIST = {
-    ["weidada3"] = true, ["aqin5200"] = true, ["ChristmasEveQ"] = true, ["Apple520145"] = true,
-    ["weidada9"] = true, ["daweiqingyi"] = true, ["qazwsx14736988"] = true, ["zthh5"] = true,
-    ["MrYu260"] = true, ["qw540889"] = true, ["CSC201000"] = true, ["c_shi2"] = true,
-    ["AQAQQASA"] = true, ["ayuan0629"] = true, ["Kqqne101"] = true, ["Tkssn101"] = true,
-    ["Sans0012o"] = true, ["ZYQ1224"] = true, ["SBB_1234o"] = true, ["SBB_12345o"] = true,
-    ["NightDiamond750"] = true
-}
+local ADMIN_USER = "weidada3"
+local ADMIN_USER_2 = "aqin5200"
+local ADMIN_USER_3 = "ChristmasEveQ"
+local ADMIN_USER_4 = "Apple520145"
+local ADMIN_USER_5 = "weidada9"
+local ADMIN_USER_6 = "daweiqingyi"
+local ADMIN_USER_7 = "qazwsx14736988"
+local ADMIN_USER_8 = "zthh5"
+local ADMIN_USER_9 = "MrYu260"
+local ADMIN_USER_10 = "qw540889"
+local ADMIN_USER_11 = "CSC201000"
+local ADMIN_USER_12 = "c_shi2"
+local ADMIN_USER_13 = "AQAQQASA"
+local ADMIN_USER_14 = "ayuan0629"
+local ADMIN_USER_15 = "Kqqne101"
+local ADMIN_USER_15 = "Tkssn101"
+local ADMIN_USER_16 = "Sans0012o"
+local ADMIN_USER_17 = "ZYQ1224"
+local ADMIN_USER_18 = "SBB_1234o"
+local ADMIN_USER_19 = "SBB_12345o"
+local ADMIN_USER_20 = "NightDiamond750"
 local SUPER_ADMINS = {
-    ["weidada3"] = true,
-    ["aqin5200"] = true,
+    ADMIN_USER,
+    ADMIN_USER_2,
+    ADMIN_USER_3,
+    ADMIN_USER_4,
+    ADMIN_USER_5,
+    ADMIN_USER_6,
+    ADMIN_USER_7,
+    ADMIN_USER_8,
+    ADMIN_USER_9,
+    ADMIN_USER_10,
+    ADMIN_USER_11,
+    ADMIN_USER_12,
+    ADMIN_USER_13,
+    ADMIN_USER_14,
+    ADMIN_USER_15,
+    ADMIN_USER_16,
+    ADMIN_USER_17,
+	ADMIN_USER_18,
+	ADMIN_USER_19,
+	ADMIN_USER_20,
+	ADMIN_USER_21,
 }
 local CREATOR_ADMINS = {
-    ["weidada3"] = true,
+    ADMIN_USER,
 }
 local remoteAdmins = {}
 local adminsLoaded = false
@@ -1462,7 +1464,7 @@ local function extractReplyTargetName(text)
     if type(text) ~= "string" then
         return nil
     end
-    local target = text:match("^回复%s+([^�?]+)[�?]")
+    local target = text:match("^回复%s+([^：:]+)[：:]")
     if not target then
         return nil
     end
@@ -1506,7 +1508,12 @@ local function isSuperAdminName(name)
     if not baseName or baseName == "" then
         return false
     end
-    return SUPER_ADMINS[baseName] == true
+    for _, adminName in ipairs(SUPER_ADMINS) do
+        if adminName ~= "" and baseName == adminName then
+            return true
+        end
+    end
+    return false
 end
 
 local function isCreatorAdminName(name)
@@ -1517,7 +1524,12 @@ local function isCreatorAdminName(name)
     if not baseName or baseName == "" then
         return false
     end
-    return CREATOR_ADMINS[baseName] == true
+    for _, adminName in ipairs(CREATOR_ADMINS) do
+        if adminName ~= "" and baseName == adminName then
+            return true
+        end
+    end
+    return false
 end
 
 local function setRemoteAdmins(list)
@@ -1542,11 +1554,10 @@ local function setRemoteAdmins(list)
             end
         end
     end
-    for adminName, _ in pairs(SUPER_ADMINS) do
-        remoteAdmins[adminName] = true
-    end
-    for adminName, _ in pairs(ADMIN_USERS_LIST) do
-        remoteAdmins[adminName] = true
+    for _, adminName in ipairs(SUPER_ADMINS) do
+        if adminName ~= "" then
+            remoteAdmins[adminName] = true
+        end
     end
     adminsLoaded = true
 end
@@ -1592,7 +1603,7 @@ local function addAdminRemote(targetName)
         })
     end)
     if not success or not response or not response.Success then
-        return false, "添加管理员失�?
+        return false, "添加管理员失败"
     end
     local ok, data = pcall(function()
         return HttpService:JSONDecode(response.Body)
@@ -1604,15 +1615,15 @@ local function addAdminRemote(targetName)
             return false, tostring(data[2])
         end
     end
-    return false, "添加管理员返回异�?
+    return false, "添加管理员返回异常"
 end
 
 local function removeAdminRemote(targetName)
     if not targetName or targetName == "" then
-        return false, "请选择要移除的管理�?
+        return false, "请选择要移除的管理员"
     end
     if isSuperAdminName(targetName) then
-        return false, "不能移除超级管理�?
+        return false, "不能移除超级管理员"
     end
     local url = string.format("%s?action=remove_admin&apikey=%s&name=%s",
         BASE_URL,
@@ -1626,7 +1637,7 @@ local function removeAdminRemote(targetName)
         })
     end)
     if not success or not response or not response.Success then
-        return false, "移除管理员失�?
+        return false, "移除管理员失败"
     end
     local ok, data = pcall(function()
         return HttpService:JSONDecode(response.Body)
@@ -1638,7 +1649,7 @@ local function removeAdminRemote(targetName)
             return false, tostring(data[2])
         end
     end
-    return false, "移除管理员返回异�?
+    return false, "移除管理员返回异常"
 end
 
 local function isAdminName(name)
@@ -1738,14 +1749,14 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                     if target and target ~= "" then
                         dmTargetName = target
                         if messageInput then
-                            messageInput.PlaceholderText = "私信�?" .. tostring(target) .. "..."
+                            messageInput.PlaceholderText = "私信给 " .. tostring(target) .. "..."
                             messageInput:CaptureFocus()
                         end
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "已进入私信模�?, false)
+                        createNotification(notifyParent, "已进入私信模式", false)
                     else
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "无法私信该用�?, true)
+                        createNotification(notifyParent, "无法私信该用户", true)
                     end
                     return
                 end
@@ -1774,10 +1785,10 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                 end
                 messageInput:CaptureFocus()
                 local notifyParent = rootGui or parent
-                createNotification(notifyParent, "已填�?" .. atText, false)
+                createNotification(notifyParent, "已填入 " .. atText, false)
             else
                 local notifyParent = rootGui or parent
-                createNotification(notifyParent, "无法获取对方名称，暂时不�?@", true)
+                createNotification(notifyParent, "无法获取对方名称，暂时不能 @", true)
             end
         end)
     end
@@ -1852,7 +1863,7 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
 
     addUICorner(bubble, UDim.new(0, 10))
     local bubbleStroke = addUIStroke(bubble, Color3.fromRGB(255, 255, 255), 1.1, isSelf and 0.5 or 0.6)
-    addStrokeGradient(bubbleStroke, ChatConstants.strokeGradient, -44)
+    addStrokeGradient(bubbleStroke, strokeGradient, -44)
     applyBubbleBorderToFrame(bubble, bubbleBorderId)
 
     local contentLayout = Instance.new("UIListLayout")
@@ -1971,14 +1982,14 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                                     local replyPrefix = "回复 " .. replyName .. ": " .. preview .. "\n"
                                     messageInput.Text = replyPrefix .. current
                                     messageInput:CaptureFocus()
-                                    createNotification(notifyParent, "已引用消�?, false)
+                                    createNotification(notifyParent, "已引用消息", false)
                                 end
                             else
                                 if setclipboard then
                                     pcall(setclipboard, message)
-                                    createNotification(notifyParent, "已复制消�?, false)
+                                    createNotification(notifyParent, "已复制消息", false)
                                 else
-                                    createNotification(notifyParent, "当前环境不支持复�?, true)
+                                    createNotification(notifyParent, "当前环境不支持复制", true)
                                 end
                             end
                         end
@@ -2140,7 +2151,7 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                         pcall(setclipboard, toCopy)
                     else
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "当前环境不支持复�?, true)
+                        createNotification(notifyParent, "当前环境不支持复制", true)
                     end
                     task.spawn(function()
                         local tweenUp = TweenService:Create(copyScale, TweenInfo.new(0.08, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1.25})
@@ -2357,7 +2368,7 @@ local function sendMessage(room, message, name, apiKey, colorString)
     end)
     
     if parseSuccess and type(data) == "table" and data[1] == "success" then
-        return true, data[2] or "发送成�?
+        return true, data[2] or "发送成功"
     end
     
     return false, response.Body or "未知错误"
@@ -2422,7 +2433,7 @@ local function sendDirectMessage(target, message, fromName, apiKey)
         return HttpService:JSONDecode(response.Body)
     end)
     if parseSuccess and type(data) == "table" and data[1] == "success" then
-        return true, data[2] or "发送成�?
+        return true, data[2] or "发送成功"
     end
     if parseSuccess and type(data) == "table" and data[1] == "error" and data[2] then
         return false, tostring(data[2])
@@ -2514,7 +2525,7 @@ local function setAnnouncementRemote(text)
     end)
     if ok and type(data) == "table" then
         if data[1] == "success" then
-            return true, data[2] or "公告已更�?
+            return true, data[2] or "公告已更新"
         elseif data[1] == "error" and data[2] then
             return false, tostring(data[2])
         end
@@ -2554,7 +2565,7 @@ end
 
 local function deleteRoomRemote(roomName)
     if not roomName or roomName == "" then
-        return false, "房间名不能为�?
+        return false, "房间名不能为空"
     end
     if roomName == FIXED_ROOM then
         return false, "默认房间不能删除"
@@ -2690,7 +2701,7 @@ do
 
     addUICorner(loginPanel, UDim.new(0, 16))
     local loginStroke = addUIStroke(loginPanel, Color3.fromRGB(255, 255, 255), 2.4, 0.2)
-    addStrokeGradient(loginStroke, ChatConstants.strokeGradient, 0)
+    addStrokeGradient(loginStroke, strokeGradient, 0)
     animateStrokeGradient(loginStroke, 18)
     addShadow(loginPanel)
 
@@ -2703,7 +2714,7 @@ do
     loginBgLayer.ZIndex = 1
     loginBgLayer.Parent = loginPanel
 
-    addUIGradient(loginBgLayer, ChatConstants.backgroundGradient, 68)
+    addUIGradient(loginBgLayer, backgroundGradient, 68)
     addUICorner(loginBgLayer, UDim.new(0, 16))
 
     loginLineLayer = Instance.new("Frame")
@@ -2770,20 +2781,20 @@ do
     subtitleLabel.Position = UDim2.new(0, 0, 0, 102)
     subtitleLabel.BackgroundTransparency = 1
     subtitleLabel.Font = Enum.Font.Gotham
-    subtitleLabel.Text = "浮华万千，藏尽人间声�?
+    subtitleLabel.Text = "浮华万千，藏尽人间声色"
     subtitleLabel.TextColor3 = textMuted
     subtitleLabel.TextSize = 11
     subtitleLabel.ZIndex = 11
     subtitleLabel.Parent = loginContent
 
     loginFoldButton = Instance.new("TextButton")
-    loginFoldButton.Name = "UI_Elements.foldButton"
+    loginFoldButton.Name = "FoldButton"
     loginFoldButton.Size = UDim2.new(0, 24, 0, 24)
     loginFoldButton.Position = UDim2.new(1, -32, 0, 10)
     loginFoldButton.BackgroundColor3 = backgroundTertiary
     loginFoldButton.BorderSizePixel = 0
     loginFoldButton.Font = Enum.Font.GothamBold
-    loginFoldButton.Text = "�?
+    loginFoldButton.Text = "—"
     loginFoldButton.TextColor3 = textColor
     loginFoldButton.TextSize = 14
     loginFoldButton.AutoButtonColor = false
@@ -2791,7 +2802,7 @@ do
     loginFoldButton.Parent = loginContent
 
     addUICorner(loginFoldButton, UDim.new(0, 6))
-    addUIGradient(loginFoldButton, ChatConstants.backgroundGradient, 68)
+    addUIGradient(loginFoldButton, backgroundGradient, 68)
     addButtonStroke(loginFoldButton, 180, 0.45)
 
     loginFoldButton.MouseEnter:Connect(function()
@@ -2803,7 +2814,7 @@ do
     end)
 
     local roomContainer
-    roomContainer, roomInput = createTextBox(loginContent, "房间�?, UDim2.new(0.85, 0, 0, 32), UDim2.new(0.5, 0, 0, 135))
+    roomContainer, roomInput = createTextBox(loginContent, "房间号", UDim2.new(0.85, 0, 0, 32), UDim2.new(0.5, 0, 0, 135))
     roomContainer.ZIndex = 11
     roomInput.ZIndex = 12
     roomInput.ClearTextOnFocus = true
@@ -2828,7 +2839,7 @@ do
 
     addUICorner(chatPanel, UDim.new(0, 18))
     local chatStroke = addUIStroke(chatPanel, Color3.fromRGB(255, 255, 255), 2.4, 0.2)
-    addStrokeGradient(chatStroke, ChatConstants.strokeGradient, 0)
+    addStrokeGradient(chatStroke, strokeGradient, 0)
     animateStrokeGradient(chatStroke, 18)
     addShadow(chatPanel)
 
@@ -2841,7 +2852,7 @@ do
     chatBgLayer.ZIndex = 1
     chatBgLayer.Parent = chatPanel
 
-    addUIGradient(chatBgLayer, ChatConstants.backgroundGradient, 68)
+    addUIGradient(chatBgLayer, backgroundGradient, 68)
     addUICorner(chatBgLayer, UDim.new(0, 18))
 
     chatBgImage = Instance.new("ImageLabel")
@@ -2895,7 +2906,7 @@ local function sendMuteCommand(targetName, seconds, reason, meta)
         return false
     end
     if isCreatorAdminName(targetName) and not isCreatorAdminName(userName) then
-        createNotification(gui, "不能禁言创世管理�?, true)
+        createNotification(gui, "不能禁言创世管理员", true)
         return false
     end
     if seconds > 0 and isAdminName(userName) and isAdminName(targetName) and (not isCreatorAdminName(userName)) then
@@ -2910,7 +2921,7 @@ local function sendMuteCommand(targetName, seconds, reason, meta)
         end
     end
     if isSuperAdminName(targetName) and (not isSuperAdminName(userName)) and (not isCreatorAdminName(userName)) then
-        createNotification(gui, "不能禁言超级管理�?, true)
+        createNotification(gui, "不能禁言超级管理员", true)
         return false
     end
     local expireAt = os.time() + math.max(seconds, 0)
@@ -2970,7 +2981,7 @@ local function openMuteList()
         muteListPanel.Parent = chatPanel
 
         addUICorner(muteListPanel, UDim.new(0, 10))
-        addUIGradient(muteListPanel, ChatConstants.backgroundGradient, 68)
+        addUIGradient(muteListPanel, backgroundGradient, 68)
         addUIStroke(muteListPanel, Color3.fromRGB(255, 255, 255), 1.2, 0.4)
 
         local title = Instance.new("TextLabel")
@@ -3060,7 +3071,7 @@ local function openMuteList()
             timeLabel.Position = UDim2.new(0.4, 0, 0, 0)
             timeLabel.BackgroundTransparency = 1
             timeLabel.Font = Enum.Font.Gotham
-            timeLabel.Text = tostring(minutes) .. "�? .. tostring(seconds) .. "�?
+            timeLabel.Text = tostring(minutes) .. "分" .. tostring(seconds) .. "秒"
             timeLabel.TextColor3 = textMuted
             timeLabel.TextSize = 10
             timeLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -3124,7 +3135,7 @@ openMuteMenu = function(targetName)
         muteMenu.Parent = chatPanel
 
         addUICorner(muteMenu, UDim.new(0, 10))
-        addUIGradient(muteMenu, ChatConstants.backgroundGradient, 68)
+        addUIGradient(muteMenu, backgroundGradient, 68)
         addUIStroke(muteMenu, Color3.fromRGB(255, 255, 255), 1.2, 0.4)
 
         muteTitle = Instance.new("TextLabel")
@@ -3257,7 +3268,7 @@ openMuteMenu = function(targetName)
         muteCustomInput.BackgroundColor3 = backgroundSecondary
         muteCustomInput.BorderSizePixel = 0
         muteCustomInput.Font = Enum.Font.Gotham
-        muteCustomInput.PlaceholderText = "自定义分�?
+        muteCustomInput.PlaceholderText = "自定义分钟"
         muteCustomInput.PlaceholderColor3 = textMuted
         muteCustomInput.Text = ""
         muteCustomInput.TextColor3 = textColor
@@ -3378,11 +3389,11 @@ openMuteMenu = function(targetName)
                         end
                     end
                     messageInput:CaptureFocus()
-                    createNotification(gui, "已填�?" .. atText, false)
+                    createNotification(gui, "已填入 " .. atText, false)
                     muteMenu.Visible = false
                 end
             else
-                createNotification(gui, "当前无法 @ 该用�?, true)
+                createNotification(gui, "当前无法 @ 该用户", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
@@ -3391,14 +3402,14 @@ openMuteMenu = function(targetName)
 
         dmBtn.MouseButton1Click:Connect(function()
             if not muteTargetName or muteTargetName == "" then
-                createNotification(gui, "当前无法私信该用�?, true)
+                createNotification(gui, "当前无法私信该用户", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
                 return
             end
             if not isAdminName(userName) then
-                createNotification(gui, "只有管理员可以私�?, true)
+                createNotification(gui, "只有管理员可以私信", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
@@ -3406,10 +3417,10 @@ openMuteMenu = function(targetName)
             end
             dmTargetName = muteTargetName
             if messageInput then
-                messageInput.PlaceholderText = "私信�?" .. tostring(muteTargetName) .. "..."
+                messageInput.PlaceholderText = "私信给 " .. tostring(muteTargetName) .. "..."
                 messageInput:CaptureFocus()
             end
-            createNotification(gui, "已进入私信模�?, false)
+            createNotification(gui, "已进入私信模式", false)
             muteMenu.Visible = false
         end)
 
@@ -3496,7 +3507,7 @@ local function refreshAdminList()
         emptyLabel.Position = UDim2.new(0, 8, 0, 40)
         emptyLabel.BackgroundTransparency = 1
         emptyLabel.Font = Enum.Font.Gotham
-        emptyLabel.Text = "暂无管理员数�?
+        emptyLabel.Text = "暂无管理员数据"
         emptyLabel.TextColor3 = textMuted
         emptyLabel.TextSize = 12
         emptyLabel.ZIndex = 52
@@ -3522,7 +3533,7 @@ openAdminPanel = function()
         adminPanel.Parent = gui
 
         addUICorner(adminPanel, UDim.new(0, 10))
-        addUIGradient(adminPanel, ChatConstants.backgroundGradient, 68)
+        addUIGradient(adminPanel, backgroundGradient, 68)
         addUIStroke(adminPanel, Color3.fromRGB(255, 255, 255), 1.2, 0.4)
 
         local title = Instance.new("TextLabel")
@@ -3533,7 +3544,7 @@ openAdminPanel = function()
         title.TextColor3 = textColor
         title.TextSize = 12
         title.TextXAlignment = Enum.TextXAlignment.Left
-        title.Text = "管理员管�?
+        title.Text = "管理员管理"
         title.ZIndex = 51
         title.Parent = adminPanel
 
@@ -3592,7 +3603,7 @@ openAdminPanel = function()
             task.spawn(function()
                 local ok, msg = setAnnouncementRemote(text)
                 if ok then
-                    createNotification(gui, msg or "公告已更�?, false)
+                    createNotification(gui, msg or "公告已更新", false)
                 else
                     createNotification(gui, msg or "公告更新失败", true)
                 end
@@ -3603,108 +3614,108 @@ openAdminPanel = function()
     adminPanel.Visible = true
 end
 
-UI_Elements.headerBar = Instance.new("Frame")
-UI_Elements.headerBar.Name = "Header"
-UI_Elements.headerBar.Size = UDim2.new(1, 0, 0, 44)
-UI_Elements.headerBar.BackgroundColor3 = backgroundTertiary
-UI_Elements.headerBar.BackgroundTransparency = 1
-UI_Elements.headerBar.BorderSizePixel = 0
-UI_Elements.headerBar.ZIndex = 11
-UI_Elements.headerBar.Parent = chatContent
+local headerBar = Instance.new("Frame")
+headerBar.Name = "Header"
+headerBar.Size = UDim2.new(1, 0, 0, 44)
+headerBar.BackgroundColor3 = backgroundTertiary
+headerBar.BackgroundTransparency = 1
+headerBar.BorderSizePixel = 0
+headerBar.ZIndex = 11
+headerBar.Parent = chatContent
 
-addUICorner(UI_Elements.headerBar, UDim.new(0, 14))
-addUIGradient(UI_Elements.headerBar, ChatConstants.backgroundGradient, 68)
+addUICorner(headerBar, UDim.new(0, 14))
+addUIGradient(headerBar, backgroundGradient, 68)
 
-UI_Elements.headerMask = Instance.new("Frame")
-UI_Elements.headerMask.Size = UDim2.new(1, 0, 0, 20)
-UI_Elements.headerMask.Position = UDim2.new(0, 0, 1, -20)
-UI_Elements.headerMask.BackgroundColor3 = backgroundTertiary
-UI_Elements.headerMask.BackgroundTransparency = 1
-UI_Elements.headerMask.BorderSizePixel = 0
-UI_Elements.headerMask.ZIndex = 11
-UI_Elements.headerMask.Parent = UI_Elements.headerBar
+local headerMask = Instance.new("Frame")
+headerMask.Size = UDim2.new(1, 0, 0, 20)
+headerMask.Position = UDim2.new(0, 0, 1, -20)
+headerMask.BackgroundColor3 = backgroundTertiary
+headerMask.BackgroundTransparency = 1
+headerMask.BorderSizePixel = 0
+headerMask.ZIndex = 11
+headerMask.Parent = headerBar
 
-addUIGradient(UI_Elements.headerMask, ChatConstants.backgroundGradient, 68)
+addUIGradient(headerMask, backgroundGradient, 68)
 
-UI_Elements.roomTitle = Instance.new("TextLabel")
-UI_Elements.roomTitle.Name = "UI_Elements.roomTitle"
-UI_Elements.roomTitle.Size = UDim2.new(1, -160, 0, 20)
-UI_Elements.roomTitle.Position = UDim2.new(0.5, 0, 0, 6)
-UI_Elements.roomTitle.AnchorPoint = Vector2.new(0.5, 0)
-UI_Elements.roomTitle.BackgroundTransparency = 1
-UI_Elements.roomTitle.Font = Enum.Font.GothamBold
-UI_Elements.roomTitle.Text = "房间: ---"
-UI_Elements.roomTitle.TextColor3 = textColor
-UI_Elements.roomTitle.TextSize = 14
-UI_Elements.roomTitle.TextXAlignment = Enum.TextXAlignment.Center
-UI_Elements.roomTitle.ZIndex = 12
-UI_Elements.roomTitle.Parent = UI_Elements.headerBar
+local roomTitle = Instance.new("TextLabel")
+roomTitle.Name = "RoomTitle"
+roomTitle.Size = UDim2.new(1, -160, 0, 20)
+roomTitle.Position = UDim2.new(0.5, 0, 0, 6)
+roomTitle.AnchorPoint = Vector2.new(0.5, 0)
+roomTitle.BackgroundTransparency = 1
+roomTitle.Font = Enum.Font.GothamBold
+roomTitle.Text = "房间: ---"
+roomTitle.TextColor3 = textColor
+roomTitle.TextSize = 14
+roomTitle.TextXAlignment = Enum.TextXAlignment.Center
+roomTitle.ZIndex = 12
+roomTitle.Parent = headerBar
 
-UI_Elements.statusIndicator = Instance.new("Frame")
-UI_Elements.statusIndicator.Name = "UI_Elements.statusIndicator"
-UI_Elements.statusIndicator.Size = UDim2.new(0, 8, 0, 8)
-UI_Elements.statusIndicator.Position = UDim2.new(0, 8, 0, 6)
-UI_Elements.statusIndicator.BackgroundColor3 = successColor
-UI_Elements.statusIndicator.BorderSizePixel = 0
-UI_Elements.statusIndicator.ZIndex = 12
-UI_Elements.statusIndicator.Parent = UI_Elements.headerBar
+local statusIndicator = Instance.new("Frame")
+statusIndicator.Name = "StatusIndicator"
+statusIndicator.Size = UDim2.new(0, 8, 0, 8)
+statusIndicator.Position = UDim2.new(0, 8, 0, 6)
+statusIndicator.BackgroundColor3 = successColor
+statusIndicator.BorderSizePixel = 0
+statusIndicator.ZIndex = 12
+statusIndicator.Parent = headerBar
 
-addUICorner(UI_Elements.statusIndicator, UDim.new(1, 0))
+addUICorner(statusIndicator, UDim.new(1, 0))
 
-UI_Elements.statusLabel = Instance.new("TextLabel")
-UI_Elements.statusLabel.Name = "UI_Elements.statusLabel"
-UI_Elements.statusLabel.Size = UDim2.new(0, 60, 0, 12)
-UI_Elements.statusLabel.Position = UDim2.new(0, 20, 0, 4)
-UI_Elements.statusLabel.BackgroundTransparency = 1
-UI_Elements.statusLabel.Font = Enum.Font.Gotham
-UI_Elements.statusLabel.Text = "已连�?
-UI_Elements.statusLabel.TextColor3 = textMuted
-UI_Elements.statusLabel.TextSize = 10
-UI_Elements.statusLabel.TextXAlignment = Enum.TextXAlignment.Left
-UI_Elements.statusLabel.ZIndex = 12
-UI_Elements.statusLabel.Parent = UI_Elements.headerBar
+local statusLabel = Instance.new("TextLabel")
+statusLabel.Name = "StatusLabel"
+statusLabel.Size = UDim2.new(0, 60, 0, 12)
+statusLabel.Position = UDim2.new(0, 20, 0, 4)
+statusLabel.BackgroundTransparency = 1
+statusLabel.Font = Enum.Font.Gotham
+statusLabel.Text = "已连接"
+statusLabel.TextColor3 = textMuted
+statusLabel.TextSize = 10
+statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+statusLabel.ZIndex = 12
+statusLabel.Parent = headerBar
 
-UI_Elements.announcementFrame = Instance.new("Frame")
-UI_Elements.announcementFrame.Name = "UI_Elements.announcementFrame"
-UI_Elements.announcementFrame.Size = UDim2.new(1, -116, 0, 16)
-UI_Elements.announcementFrame.Position = UDim2.new(0, 8, 0, 26)
-UI_Elements.announcementFrame.BackgroundTransparency = 1
-UI_Elements.announcementFrame.ZIndex = 12
-UI_Elements.announcementFrame.Parent = UI_Elements.headerBar
+local announcementFrame = Instance.new("Frame")
+announcementFrame.Name = "AnnouncementFrame"
+announcementFrame.Size = UDim2.new(1, -116, 0, 16)
+announcementFrame.Position = UDim2.new(0, 8, 0, 26)
+announcementFrame.BackgroundTransparency = 1
+announcementFrame.ZIndex = 12
+announcementFrame.Parent = headerBar
 
-UI_Elements.announcementClip = Instance.new("Frame")
-UI_Elements.announcementClip.Name = "UI_Elements.announcementClip"
-UI_Elements.announcementClip.Size = UDim2.new(1, 0, 1, 0)
-UI_Elements.announcementClip.BackgroundTransparency = 1
-UI_Elements.announcementClip.ClipsDescendants = true
-UI_Elements.announcementClip.ZIndex = 12
-UI_Elements.announcementClip.Parent = UI_Elements.announcementFrame
+local announcementClip = Instance.new("Frame")
+announcementClip.Name = "AnnouncementClip"
+announcementClip.Size = UDim2.new(1, 0, 1, 0)
+announcementClip.BackgroundTransparency = 1
+announcementClip.ClipsDescendants = true
+announcementClip.ZIndex = 12
+announcementClip.Parent = announcementFrame
 
-UI_Elements.announcementLabel = Instance.new("TextLabel")
-UI_Elements.announcementLabel.Name = "UI_Elements.announcementLabel"
-UI_Elements.announcementLabel.Size = UDim2.new(0, 0, 1, 0)
-UI_Elements.announcementLabel.Position = UDim2.new(0, 0, 0, 0)
-UI_Elements.announcementLabel.AutomaticSize = Enum.AutomaticSize.X
-UI_Elements.announcementLabel.BackgroundTransparency = 1
-UI_Elements.announcementLabel.Font = Enum.Font.GothamBold
-UI_Elements.announcementLabel.Text = ""
-UI_Elements.announcementLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
-UI_Elements.announcementLabel.TextSize = 11
-UI_Elements.announcementLabel.TextXAlignment = Enum.TextXAlignment.Left
-UI_Elements.announcementLabel.RichText = true
-UI_Elements.announcementLabel.ZIndex = 12
-UI_Elements.announcementLabel.Parent = UI_Elements.announcementClip
+local announcementLabel = Instance.new("TextLabel")
+announcementLabel.Name = "AnnouncementLabel"
+announcementLabel.Size = UDim2.new(0, 0, 1, 0)
+announcementLabel.Position = UDim2.new(0, 0, 0, 0)
+announcementLabel.AutomaticSize = Enum.AutomaticSize.X
+announcementLabel.BackgroundTransparency = 1
+announcementLabel.Font = Enum.Font.GothamBold
+announcementLabel.Text = ""
+announcementLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+announcementLabel.TextSize = 11
+announcementLabel.TextXAlignment = Enum.TextXAlignment.Left
+announcementLabel.RichText = true
+announcementLabel.ZIndex = 12
+announcementLabel.Parent = announcementClip
 
 applyAnnouncement = function(text)
     currentAnnouncement = text or ""
     announcementVersion = announcementVersion + 1
     local myVersion = announcementVersion
-    if not UI_Elements.announcementLabel or not UI_Elements.announcementClip then
+    if not announcementLabel or not announcementClip then
         return
     end
     if currentAnnouncement == "" then
-        UI_Elements.announcementLabel.Text = ""
-        UI_Elements.announcementLabel.Position = UDim2.new(0, 0, 0, 0)
+        announcementLabel.Text = ""
+        announcementLabel.Position = UDim2.new(0, 0, 0, 0)
         return
     end
     local function escapeRichText(str)
@@ -3714,8 +3725,8 @@ applyAnnouncement = function(text)
         str = str:gsub(">", "&gt;")
         return str
     end
-    local displayText = '<font color="rgb(255,0,0)">公告�?/font>' .. escapeRichText(currentAnnouncement)
-    UI_Elements.announcementLabel.Text = displayText
+    local displayText = '<font color="rgb(255,0,0)">公告：</font>' .. escapeRichText(currentAnnouncement)
+    announcementLabel.Text = displayText
     task.spawn(function()
         task.wait(0.1)
         local padding = 40
@@ -3725,7 +3736,7 @@ applyAnnouncement = function(text)
             local startAt = os.clock()
             while os.clock() - startAt < 2 do
                 RunService.Heartbeat:Wait()
-                local w = UI_Elements.announcementLabel.TextBounds.X
+                local w = announcementLabel.TextBounds.X
                 if w and w > 0 then
                     if last > 0 and math.abs(w - last) < 0.5 then
                         stable = stable + 1
@@ -3738,19 +3749,19 @@ applyAnnouncement = function(text)
                     end
                 end
             end
-            return UI_Elements.announcementLabel.TextBounds.X
+            return announcementLabel.TextBounds.X
         end
         while myVersion == announcementVersion do
-            local clipWidth = UI_Elements.announcementClip.AbsoluteSize.X
+            local clipWidth = announcementClip.AbsoluteSize.X
             local textWidth = getStableTextWidth()
             if clipWidth <= 0 or textWidth <= 0 then
                 task.wait(0.5)
             else
-                UI_Elements.announcementLabel.Position = UDim2.new(0, clipWidth, 0, 0)
+                announcementLabel.Position = UDim2.new(0, clipWidth, 0, 0)
                 local distance = clipWidth + textWidth + padding
                 local speed = 40
                 local duration = math.max(8, distance / speed)
-                local tween = tweenProperty(UI_Elements.announcementLabel, {Position = UDim2.new(0, -textWidth - padding, 0, 0)}, duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+                local tween = tweenProperty(announcementLabel, {Position = UDim2.new(0, -textWidth - padding, 0, 0)}, duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
                 local doneState = nil
                 if tween then
                     tween.Completed:Connect(function(state)
@@ -3780,281 +3791,281 @@ applyAnnouncement = function(text)
     end)
 end
 
-UI_Elements.foldButton = Instance.new("TextButton")
-UI_Elements.foldButton.Name = "UI_Elements.foldButton"
-UI_Elements.foldButton.Size = UDim2.new(0, 28, 0, 28)
-UI_Elements.foldButton.Position = UDim2.new(1, -70, 0, 8)
-UI_Elements.foldButton.BackgroundColor3 = ChatConstants.softPurpleColor
-UI_Elements.foldButton.BackgroundTransparency = 0.35
-UI_Elements.foldButton.BorderSizePixel = 0
-UI_Elements.foldButton.Font = Enum.Font.GothamBold
-UI_Elements.foldButton.Text = "�?
-UI_Elements.foldButton.TextColor3 = textColor
-UI_Elements.foldButton.TextSize = 14
-UI_Elements.foldButton.AutoButtonColor = false
-UI_Elements.foldButton.ZIndex = 12
-UI_Elements.foldButton.Parent = UI_Elements.headerBar
+local foldButton = Instance.new("TextButton")
+foldButton.Name = "FoldButton"
+foldButton.Size = UDim2.new(0, 28, 0, 28)
+foldButton.Position = UDim2.new(1, -70, 0, 8)
+foldButton.BackgroundColor3 = softPurpleColor
+foldButton.BackgroundTransparency = 0.35
+foldButton.BorderSizePixel = 0
+foldButton.Font = Enum.Font.GothamBold
+foldButton.Text = "—"
+foldButton.TextColor3 = textColor
+foldButton.TextSize = 14
+foldButton.AutoButtonColor = false
+foldButton.ZIndex = 12
+foldButton.Parent = headerBar
 
-addUICorner(UI_Elements.foldButton, UDim.new(0, 6))
-addUIGradient(UI_Elements.foldButton, ChatConstants.softPurpleGradient, 68)
-addButtonStroke(UI_Elements.foldButton, 180, 0.45)
+addUICorner(foldButton, UDim.new(0, 6))
+addUIGradient(foldButton, softPurpleGradient, 68)
+addButtonStroke(foldButton, 180, 0.45)
 
-UI_Elements.foldButton.MouseEnter:Connect(function()
-    tweenProperty(UI_Elements.foldButton, {BackgroundTransparency = 0.15}, 0.15)
+foldButton.MouseEnter:Connect(function()
+    tweenProperty(foldButton, {BackgroundTransparency = 0.15}, 0.15)
 end)
-UI_Elements.foldButton.MouseLeave:Connect(function()
-    tweenProperty(UI_Elements.foldButton, {BackgroundTransparency = 0.35}, 0.15)
-end)
-
-UI_Elements.leaveButton = Instance.new("TextButton")
-UI_Elements.leaveButton.Name = "UI_Elements.leaveButton"
-UI_Elements.leaveButton.Size = UDim2.new(0, 28, 0, 28)
-UI_Elements.leaveButton.Position = UDim2.new(1, -38, 0, 8)
-UI_Elements.leaveButton.BackgroundColor3 = errorColor
-UI_Elements.leaveButton.BackgroundTransparency = 0.35
-UI_Elements.leaveButton.BorderSizePixel = 0
-UI_Elements.leaveButton.Font = Enum.Font.GothamBold
-UI_Elements.leaveButton.Text = "X"
-UI_Elements.leaveButton.TextColor3 = textColor
-UI_Elements.leaveButton.TextSize = 14
-UI_Elements.leaveButton.AutoButtonColor = false
-UI_Elements.leaveButton.ZIndex = 12
-UI_Elements.leaveButton.Parent = UI_Elements.headerBar
-
-addUICorner(UI_Elements.leaveButton, UDim.new(0, 6))
-addUIGradient(UI_Elements.leaveButton, ColorSequence.new(Color3.fromRGB(255, 120, 120), errorColor), 68)
-addButtonStroke(UI_Elements.leaveButton, 180, 0.45)
-
-UI_Elements.leaveButton.MouseEnter:Connect(function()
-    tweenProperty(UI_Elements.leaveButton, {BackgroundTransparency = 0.15}, 0.15)
-end)
-UI_Elements.leaveButton.MouseLeave:Connect(function()
-    tweenProperty(UI_Elements.leaveButton, {BackgroundTransparency = 0.35}, 0.15)
+foldButton.MouseLeave:Connect(function()
+    tweenProperty(foldButton, {BackgroundTransparency = 0.35}, 0.15)
 end)
 
-UI_Elements.messageArea = Instance.new("ScrollingFrame")
-UI_Elements.messageArea.Name = "UI_Elements.messageArea"
-UI_Elements.messageArea.Size = UDim2.new(1, -16, 1, -102)
-UI_Elements.messageArea.Position = UDim2.new(0, 8, 0, 48)
-UI_Elements.messageArea.BackgroundColor3 = backgroundColor
-UI_Elements.messageArea.BackgroundTransparency = 1
-UI_Elements.messageArea.BorderSizePixel = 0
-UI_Elements.messageArea.ScrollBarThickness = 4
-UI_Elements.messageArea.ScrollBarImageColor3 = accentColor
-UI_Elements.messageArea.ScrollBarImageTransparency = 0.4
-UI_Elements.messageArea.CanvasSize = UDim2.new(0, 0, 0, 0)
-UI_Elements.messageArea.AutomaticCanvasSize = Enum.AutomaticSize.Y
-UI_Elements.messageArea.ScrollingDirection = Enum.ScrollingDirection.Y
-UI_Elements.messageArea.ElasticBehavior = Enum.ElasticBehavior.Always
-UI_Elements.messageArea.ZIndex = 11
-UI_Elements.messageArea.Parent = chatContent
+local leaveButton = Instance.new("TextButton")
+leaveButton.Name = "LeaveButton"
+leaveButton.Size = UDim2.new(0, 28, 0, 28)
+leaveButton.Position = UDim2.new(1, -38, 0, 8)
+leaveButton.BackgroundColor3 = errorColor
+leaveButton.BackgroundTransparency = 0.35
+leaveButton.BorderSizePixel = 0
+leaveButton.Font = Enum.Font.GothamBold
+leaveButton.Text = "X"
+leaveButton.TextColor3 = textColor
+leaveButton.TextSize = 14
+leaveButton.AutoButtonColor = false
+leaveButton.ZIndex = 12
+leaveButton.Parent = headerBar
 
-addUICorner(UI_Elements.messageArea, UDim.new(0, 12))
-addUIPadding(UI_Elements.messageArea, 6)
-local messageStroke = addUIStroke(UI_Elements.messageArea, Color3.fromRGB(255, 255, 255), 1.2, 0.5)
-addStrokeGradient(messageStroke, ChatConstants.strokeGradient, -44)
+addUICorner(leaveButton, UDim.new(0, 6))
+addUIGradient(leaveButton, ColorSequence.new(Color3.fromRGB(255, 120, 120), errorColor), 68)
+addButtonStroke(leaveButton, 180, 0.45)
+
+leaveButton.MouseEnter:Connect(function()
+    tweenProperty(leaveButton, {BackgroundTransparency = 0.15}, 0.15)
+end)
+leaveButton.MouseLeave:Connect(function()
+    tweenProperty(leaveButton, {BackgroundTransparency = 0.35}, 0.15)
+end)
+
+local messageArea = Instance.new("ScrollingFrame")
+messageArea.Name = "MessageArea"
+messageArea.Size = UDim2.new(1, -16, 1, -102)
+messageArea.Position = UDim2.new(0, 8, 0, 48)
+messageArea.BackgroundColor3 = backgroundColor
+messageArea.BackgroundTransparency = 1
+messageArea.BorderSizePixel = 0
+messageArea.ScrollBarThickness = 4
+messageArea.ScrollBarImageColor3 = accentColor
+messageArea.ScrollBarImageTransparency = 0.4
+messageArea.CanvasSize = UDim2.new(0, 0, 0, 0)
+messageArea.AutomaticCanvasSize = Enum.AutomaticSize.Y
+messageArea.ScrollingDirection = Enum.ScrollingDirection.Y
+messageArea.ElasticBehavior = Enum.ElasticBehavior.Always
+messageArea.ZIndex = 11
+messageArea.Parent = chatContent
+
+addUICorner(messageArea, UDim.new(0, 12))
+addUIPadding(messageArea, 6)
+local messageStroke = addUIStroke(messageArea, Color3.fromRGB(255, 255, 255), 1.2, 0.5)
+addStrokeGradient(messageStroke, strokeGradient, -44)
 animateStrokeGradient(messageStroke, 18)
-addUIGradient(UI_Elements.messageArea, ChatConstants.backgroundGradient, 68)
+addUIGradient(messageArea, backgroundGradient, 68)
 
-UI_Elements.messageLayout = Instance.new("UIListLayout")
-UI_Elements.messageLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UI_Elements.messageLayout.Padding = UDim.new(0, 6)
-UI_Elements.messageLayout.Parent = UI_Elements.messageArea
+local messageLayout = Instance.new("UIListLayout")
+messageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+messageLayout.Padding = UDim.new(0, 6)
+messageLayout.Parent = messageArea
 
 local messageCount = 0
 
 local loadMessages
 local atAllButton
 
-UI_Elements.inputArea = Instance.new("Frame")
-UI_Elements.inputArea.Name = "UI_Elements.inputArea"
-UI_Elements.inputArea.Size = UDim2.new(1, -16, 0, 40)
-UI_Elements.inputArea.Position = UDim2.new(0, 8, 1, -48)
-UI_Elements.inputArea.BackgroundTransparency = 1
-UI_Elements.inputArea.ZIndex = 11
-UI_Elements.inputArea.Parent = chatContent
+local inputArea = Instance.new("Frame")
+inputArea.Name = "InputArea"
+inputArea.Size = UDim2.new(1, -16, 0, 40)
+inputArea.Position = UDim2.new(0, 8, 1, -48)
+inputArea.BackgroundTransparency = 1
+inputArea.ZIndex = 11
+inputArea.Parent = chatContent
 
-UI_Elements.bottomTipLabel = Instance.new("TextLabel")
-UI_Elements.bottomTipLabel.Name = "BottomTip"
-UI_Elements.bottomTipLabel.Size = UDim2.new(1, -16, 0, 14)
-UI_Elements.bottomTipLabel.Position = UDim2.new(0, 8, 1, -70)
-UI_Elements.bottomTipLabel.BackgroundTransparency = 1
-UI_Elements.bottomTipLabel.Font = Enum.Font.Gotham
-UI_Elements.bottomTipLabel.Text = ""
-UI_Elements.bottomTipLabel.TextColor3 = textMuted
-UI_Elements.bottomTipLabel.TextSize = 11
-UI_Elements.bottomTipLabel.TextXAlignment = Enum.TextXAlignment.Left
-UI_Elements.bottomTipLabel.ZIndex = 12
-UI_Elements.bottomTipLabel.Visible = false
-UI_Elements.bottomTipLabel.Parent = chatContent
+local bottomTipLabel = Instance.new("TextLabel")
+bottomTipLabel.Name = "BottomTip"
+bottomTipLabel.Size = UDim2.new(1, -16, 0, 14)
+bottomTipLabel.Position = UDim2.new(0, 8, 1, -70)
+bottomTipLabel.BackgroundTransparency = 1
+bottomTipLabel.Font = Enum.Font.Gotham
+bottomTipLabel.Text = ""
+bottomTipLabel.TextColor3 = textMuted
+bottomTipLabel.TextSize = 11
+bottomTipLabel.TextXAlignment = Enum.TextXAlignment.Left
+bottomTipLabel.ZIndex = 12
+bottomTipLabel.Visible = false
+bottomTipLabel.Parent = chatContent
 
 local bottomTipToken = 0
 local function showBottomTip(text)
     bottomTipToken = bottomTipToken + 1
     local myToken = bottomTipToken
-    UI_Elements.bottomTipLabel.Text = tostring(text or "")
-    UI_Elements.bottomTipLabel.TextTransparency = 0
-    UI_Elements.bottomTipLabel.Visible = true
+    bottomTipLabel.Text = tostring(text or "")
+    bottomTipLabel.TextTransparency = 0
+    bottomTipLabel.Visible = true
     task.spawn(function()
         task.wait(2)
         if myToken ~= bottomTipToken then
             return
         end
-        tweenProperty(UI_Elements.bottomTipLabel, {TextTransparency = 1}, 0.2)
+        tweenProperty(bottomTipLabel, {TextTransparency = 1}, 0.2)
         task.wait(0.22)
         if myToken ~= bottomTipToken then
             return
         end
-        UI_Elements.bottomTipLabel.Visible = false
+        bottomTipLabel.Visible = false
     end)
 end
 
-UI_Elements.scrollToBottomButton = Instance.new("TextButton")
-UI_Elements.scrollToBottomButton.Name = "ScrollToBottom"
-UI_Elements.scrollToBottomButton.Size = UDim2.new(0, 34, 0, 28)
-UI_Elements.scrollToBottomButton.AnchorPoint = Vector2.new(0.5, 1)
-UI_Elements.scrollToBottomButton.Position = UDim2.new(0.5, 0, 1, -58)
-UI_Elements.scrollToBottomButton.BackgroundColor3 = ChatConstants.softPurpleColor
-UI_Elements.scrollToBottomButton.BackgroundTransparency = 0.35
-UI_Elements.scrollToBottomButton.BorderSizePixel = 0
-UI_Elements.scrollToBottomButton.Font = Enum.Font.GothamBold
-UI_Elements.scrollToBottomButton.Text = "�?
-UI_Elements.scrollToBottomButton.TextColor3 = textColor
-UI_Elements.scrollToBottomButton.TextSize = 18
-UI_Elements.scrollToBottomButton.AutoButtonColor = false
-UI_Elements.scrollToBottomButton.ZIndex = 25
-UI_Elements.scrollToBottomButton.Visible = false
-UI_Elements.scrollToBottomButton.Parent = chatContent
-addUICorner(UI_Elements.scrollToBottomButton, UDim.new(0, 12))
-addUIGradient(UI_Elements.scrollToBottomButton, ChatConstants.softPurpleGradient, 68)
-addButtonStroke(UI_Elements.scrollToBottomButton, 180, 0.35)
+local scrollToBottomButton = Instance.new("TextButton")
+scrollToBottomButton.Name = "ScrollToBottom"
+scrollToBottomButton.Size = UDim2.new(0, 34, 0, 28)
+scrollToBottomButton.AnchorPoint = Vector2.new(0.5, 1)
+scrollToBottomButton.Position = UDim2.new(0.5, 0, 1, -58)
+scrollToBottomButton.BackgroundColor3 = softPurpleColor
+scrollToBottomButton.BackgroundTransparency = 0.35
+scrollToBottomButton.BorderSizePixel = 0
+scrollToBottomButton.Font = Enum.Font.GothamBold
+scrollToBottomButton.Text = "↓"
+scrollToBottomButton.TextColor3 = textColor
+scrollToBottomButton.TextSize = 18
+scrollToBottomButton.AutoButtonColor = false
+scrollToBottomButton.ZIndex = 25
+scrollToBottomButton.Visible = false
+scrollToBottomButton.Parent = chatContent
+addUICorner(scrollToBottomButton, UDim.new(0, 12))
+addUIGradient(scrollToBottomButton, softPurpleGradient, 68)
+addButtonStroke(scrollToBottomButton, 180, 0.35)
 
-UI_Elements.scrollToBottomScale = Instance.new("UIScale")
-UI_Elements.scrollToBottomScale.Scale = 1
-UI_Elements.scrollToBottomScale.Parent = UI_Elements.scrollToBottomButton
+local scrollToBottomScale = Instance.new("UIScale")
+scrollToBottomScale.Scale = 1
+scrollToBottomScale.Parent = scrollToBottomButton
 
 local function getMaxMessageScrollY()
     local canvasY = 0
     pcall(function()
-        canvasY = UI_Elements.messageArea.AbsoluteCanvasSize.Y
+        canvasY = messageArea.AbsoluteCanvasSize.Y
     end)
     local windowY = 0
     pcall(function()
-        windowY = UI_Elements.messageArea.AbsoluteWindowSize.Y
+        windowY = messageArea.AbsoluteWindowSize.Y
     end)
     return math.max(0, (tonumber(canvasY) or 0) - (tonumber(windowY) or 0))
 end
 
 local function updateScrollToBottomButton()
-    if not UI_Elements.scrollToBottomButton or not UI_Elements.messageArea then
+    if not scrollToBottomButton or not messageArea then
         return
     end
     local maxY = getMaxMessageScrollY()
     local currentY = 0
     pcall(function()
-        currentY = UI_Elements.messageArea.CanvasPosition.Y
+        currentY = messageArea.CanvasPosition.Y
     end)
-    UI_Elements.scrollToBottomButton.Visible = maxY > 0 and (maxY - (tonumber(currentY) or 0)) > 24
+    scrollToBottomButton.Visible = maxY > 0 and (maxY - (tonumber(currentY) or 0)) > 24
 end
 
-UI_Elements.scrollToBottomButton.MouseButton1Click:Connect(function()
-    tweenProperty(UI_Elements.scrollToBottomScale, {Scale = 0.9}, 0.05)
+scrollToBottomButton.MouseButton1Click:Connect(function()
+    tweenProperty(scrollToBottomScale, {Scale = 0.9}, 0.05)
     task.delay(0.07, function()
-        tweenProperty(UI_Elements.scrollToBottomScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
+        tweenProperty(scrollToBottomScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
     end)
-    if not UI_Elements.messageArea then
+    if not messageArea then
         return
     end
     local maxY = getMaxMessageScrollY()
     local target = Vector2.new(0, maxY)
     local okTween = pcall(function()
-        tweenProperty(UI_Elements.messageArea, {CanvasPosition = target}, 0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        tweenProperty(messageArea, {CanvasPosition = target}, 0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     end)
     if not okTween then
         pcall(function()
-            UI_Elements.messageArea.CanvasPosition = target
+            messageArea.CanvasPosition = target
         end)
     end
     task.delay(0.2, updateScrollToBottomButton)
 end)
 
-UI_Elements.messageArea:GetPropertyChangedSignal("CanvasPosition"):Connect(updateScrollToBottomButton)
-UI_Elements.messageArea:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateScrollToBottomButton)
-UI_Elements.messageArea:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateScrollToBottomButton)
+messageArea:GetPropertyChangedSignal("CanvasPosition"):Connect(updateScrollToBottomButton)
+messageArea:GetPropertyChangedSignal("AbsoluteCanvasSize"):Connect(updateScrollToBottomButton)
+messageArea:GetPropertyChangedSignal("AbsoluteWindowSize"):Connect(updateScrollToBottomButton)
 task.defer(updateScrollToBottomButton)
 
-UI_Elements.emojiToggle = Instance.new("TextButton")
-UI_Elements.emojiToggle.Name = "UI_Elements.emojiToggle"
-UI_Elements.emojiToggle.Size = UDim2.new(0, 32, 0, 32)
-UI_Elements.emojiToggle.Position = UDim2.new(0, 0, 0.5, 0)
-UI_Elements.emojiToggle.AnchorPoint = Vector2.new(0, 0.5)
-UI_Elements.emojiToggle.BackgroundColor3 = Color3.fromRGB(90, 100, 180)
-UI_Elements.emojiToggle.BorderSizePixel = 0
-UI_Elements.emojiToggle.Font = Enum.Font.SourceSans
-UI_Elements.emojiToggle.Text = "😎"
-UI_Elements.emojiToggle.TextSize = 18
-UI_Elements.emojiToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-UI_Elements.emojiToggle.AutoButtonColor = false
-UI_Elements.emojiToggle.ZIndex = 12
-UI_Elements.emojiToggle.Parent = UI_Elements.inputArea
+local emojiToggle = Instance.new("TextButton")
+emojiToggle.Name = "EmojiToggle"
+emojiToggle.Size = UDim2.new(0, 32, 0, 32)
+emojiToggle.Position = UDim2.new(0, 0, 0.5, 0)
+emojiToggle.AnchorPoint = Vector2.new(0, 0.5)
+emojiToggle.BackgroundColor3 = Color3.fromRGB(90, 100, 180)
+emojiToggle.BorderSizePixel = 0
+emojiToggle.Font = Enum.Font.SourceSans
+emojiToggle.Text = "😎"
+emojiToggle.TextSize = 18
+emojiToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+emojiToggle.AutoButtonColor = false
+emojiToggle.ZIndex = 12
+emojiToggle.Parent = inputArea
 
-addUICorner(UI_Elements.emojiToggle, UDim.new(0, 10))
-addUIGradient(UI_Elements.emojiToggle, ChatConstants.backgroundGradient, 68)
-addButtonStroke(UI_Elements.emojiToggle, 180, 0.25)
+addUICorner(emojiToggle, UDim.new(0, 10))
+addUIGradient(emojiToggle, backgroundGradient, 68)
+addButtonStroke(emojiToggle, 180, 0.25)
 
-UI_Elements.emojiScale = Instance.new("UIScale")
-UI_Elements.emojiScale.Scale = 1
-UI_Elements.emojiScale.Parent = UI_Elements.emojiToggle
+local emojiScale = Instance.new("UIScale")
+emojiScale.Scale = 1
+emojiScale.Parent = emojiToggle
 
-UI_Elements.colorPickerContainer = Instance.new("Frame")
-UI_Elements.colorPickerContainer.Name = "UI_Elements.colorPickerContainer"
-UI_Elements.colorPickerContainer.Size = UDim2.new(0, 32, 0, 32)
-UI_Elements.colorPickerContainer.Position = UDim2.new(0, 38, 0.5, 0)
-UI_Elements.colorPickerContainer.AnchorPoint = Vector2.new(0, 0.5)
-UI_Elements.colorPickerContainer.BackgroundTransparency = 1
-UI_Elements.colorPickerContainer.ZIndex = 12
-UI_Elements.colorPickerContainer.Parent = UI_Elements.inputArea
+local colorPickerContainer = Instance.new("Frame")
+colorPickerContainer.Name = "ColorPickerContainer"
+colorPickerContainer.Size = UDim2.new(0, 32, 0, 32)
+colorPickerContainer.Position = UDim2.new(0, 38, 0.5, 0)
+colorPickerContainer.AnchorPoint = Vector2.new(0, 0.5)
+colorPickerContainer.BackgroundTransparency = 1
+colorPickerContainer.ZIndex = 12
+colorPickerContainer.Parent = inputArea
 
-UI_Elements.colorToggle = Instance.new("TextButton")
-UI_Elements.colorToggle.Name = "UI_Elements.colorToggle"
-UI_Elements.colorToggle.Size = UDim2.new(1, 0, 1, 0)
-UI_Elements.colorToggle.Position = UDim2.new(0, 0, 0, 0)
-applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
-UI_Elements.colorToggle.BorderSizePixel = 0
-UI_Elements.colorToggle.Text = ""
-UI_Elements.colorToggle.AutoButtonColor = false
-UI_Elements.colorToggle.ZIndex = 13
-UI_Elements.colorToggle.Parent = UI_Elements.colorPickerContainer
+local colorToggle = Instance.new("TextButton")
+colorToggle.Name = "ColorToggle"
+colorToggle.Size = UDim2.new(1, 0, 1, 0)
+colorToggle.Position = UDim2.new(0, 0, 0, 0)
+applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
+colorToggle.BorderSizePixel = 0
+colorToggle.Text = ""
+colorToggle.AutoButtonColor = false
+colorToggle.ZIndex = 13
+colorToggle.Parent = colorPickerContainer
 
-addUICorner(UI_Elements.colorToggle, UDim.new(0, 10))
-addButtonStroke(UI_Elements.colorToggle, 180, 0.25)
-applyBubbleBorderToFrame(UI_Elements.colorToggle, isAdminName(userName) and selfBubbleBorderId or 0)
+addUICorner(colorToggle, UDim.new(0, 10))
+addButtonStroke(colorToggle, 180, 0.25)
+applyBubbleBorderToFrame(colorToggle, isAdminName(userName) and selfBubbleBorderId or 0)
 
-UI_Elements.colorScale = Instance.new("UIScale")
-UI_Elements.colorScale.Scale = 1
-UI_Elements.colorScale.Parent = UI_Elements.colorToggle
+local colorScale = Instance.new("UIScale")
+colorScale.Scale = 1
+colorScale.Parent = colorToggle
 
-UI_Elements.messageInputContainer = Instance.new("Frame")
-UI_Elements.messageInputContainer.Name = "UI_Elements.messageInputContainer"
+local messageInputContainer = Instance.new("Frame")
+messageInputContainer.Name = "MessageInputContainer"
 if isAdminName(userName) then
-    UI_Elements.messageInputContainer.Size = UDim2.new(1, -160, 0, 32)
-    UI_Elements.messageInputContainer.Position = UDim2.new(0, 120, 0.5, 0)
+    messageInputContainer.Size = UDim2.new(1, -160, 0, 32)
+    messageInputContainer.Position = UDim2.new(0, 120, 0.5, 0)
 else
-    UI_Elements.messageInputContainer.Size = UDim2.new(1, -126, 0, 32)
-    UI_Elements.messageInputContainer.Position = UDim2.new(0, 86, 0.5, 0)
+    messageInputContainer.Size = UDim2.new(1, -126, 0, 32)
+    messageInputContainer.Position = UDim2.new(0, 86, 0.5, 0)
 end
-UI_Elements.messageInputContainer.AnchorPoint = Vector2.new(0, 0.5)
-UI_Elements.messageInputContainer.BackgroundColor3 = ChatConstants.softInputColor
-UI_Elements.messageInputContainer.BackgroundTransparency = 0.35
-UI_Elements.messageInputContainer.BorderSizePixel = 0
-UI_Elements.messageInputContainer.ZIndex = 12
-UI_Elements.messageInputContainer.Parent = UI_Elements.inputArea
+messageInputContainer.AnchorPoint = Vector2.new(0, 0.5)
+messageInputContainer.BackgroundColor3 = softInputColor
+messageInputContainer.BackgroundTransparency = 0.35
+messageInputContainer.BorderSizePixel = 0
+messageInputContainer.ZIndex = 12
+messageInputContainer.Parent = inputArea
 
-addUICorner(UI_Elements.messageInputContainer, UDim.new(0, 12))
-local inputStroke = addUIStroke(UI_Elements.messageInputContainer, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-addStrokeGradient(inputStroke, ChatConstants.strokeGradient, 180)
+addUICorner(messageInputContainer, UDim.new(0, 12))
+local inputStroke = addUIStroke(messageInputContainer, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
+addStrokeGradient(inputStroke, strokeGradient, 180)
 animateStrokeGradient(inputStroke, 18)
-addUIGradient(UI_Elements.messageInputContainer, ChatConstants.softInputGradient, 68)
+addUIGradient(messageInputContainer, softInputGradient, 68)
 
 messageInput = Instance.new("TextBox")
 messageInput.Name = "MessageInput"
@@ -4063,46 +4074,46 @@ messageInput.Position = UDim2.new(0, 8, 0, 0)
 messageInput.BackgroundTransparency = 1
 messageInput.Font = Enum.Font.Gotham
 messageInput.PlaceholderText = "输入消息..."
-messageInput.PlaceholderColor3 = ChatConstants.softInputPlaceholderColor
+messageInput.PlaceholderColor3 = softInputPlaceholderColor
 messageInput.Text = ""
 messageInput.TextColor3 = selfFontColor
 messageInput.TextSize = 12
 messageInput.TextXAlignment = Enum.TextXAlignment.Left
 messageInput.ClearTextOnFocus = false
 messageInput.ZIndex = 13
-messageInput.Parent = UI_Elements.messageInputContainer
+messageInput.Parent = messageInputContainer
 
 messageInput.Focused:Connect(function()
-    tweenProperty(UI_Elements.messageInputContainer:FindFirstChildOfClass("UIStroke"), {Color = accentColor, Transparency = 0.3}, 0.15)
+    tweenProperty(messageInputContainer:FindFirstChildOfClass("UIStroke"), {Color = accentColor, Transparency = 0.3}, 0.15)
 end)
 messageInput.FocusLost:Connect(function()
-    tweenProperty(UI_Elements.messageInputContainer:FindFirstChildOfClass("UIStroke"), {Color = Color3.fromRGB(70, 70, 70), Transparency = 0.5}, 0.15)
+    tweenProperty(messageInputContainer:FindFirstChildOfClass("UIStroke"), {Color = Color3.fromRGB(70, 70, 70), Transparency = 0.5}, 0.15)
 end)
 
-UI_Elements.sendButton = Instance.new("TextButton")
-UI_Elements.sendButton.Name = "UI_Elements.sendButton"
-UI_Elements.sendButton.Size = UDim2.new(0, 42, 0, 32)
-UI_Elements.sendButton.Position = UDim2.new(1, -36, 0.5, 0)
-UI_Elements.sendButton.AnchorPoint = Vector2.new(0, 0.5)
-UI_Elements.sendButton.BackgroundColor3 = ChatConstants.softOrangeColor
-UI_Elements.sendButton.BackgroundTransparency = 0.35
-UI_Elements.sendButton.BorderSizePixel = 0
-UI_Elements.sendButton.Font = Enum.Font.GothamBold
-UI_Elements.sendButton.Text = "�?
-UI_Elements.sendButton.TextColor3 = textColor
-UI_Elements.sendButton.TextSize = 18
-UI_Elements.sendButton.AutoButtonColor = false
-UI_Elements.sendButton.ZIndex = 12
-UI_Elements.sendButton.Parent = UI_Elements.inputArea
+local sendButton = Instance.new("TextButton")
+sendButton.Name = "SendButton"
+sendButton.Size = UDim2.new(0, 42, 0, 32)
+sendButton.Position = UDim2.new(1, -36, 0.5, 0)
+sendButton.AnchorPoint = Vector2.new(0, 0.5)
+sendButton.BackgroundColor3 = softOrangeColor
+sendButton.BackgroundTransparency = 0.35
+sendButton.BorderSizePixel = 0
+sendButton.Font = Enum.Font.GothamBold
+sendButton.Text = "↑"
+sendButton.TextColor3 = textColor
+sendButton.TextSize = 18
+sendButton.AutoButtonColor = false
+sendButton.ZIndex = 12
+sendButton.Parent = inputArea
 
-addUICorner(UI_Elements.sendButton, UDim.new(0, 12))
-addUIGradient(UI_Elements.sendButton, ChatConstants.softOrangeGradient, 68)
-addButtonStroke(UI_Elements.sendButton, 180, 0.35)
+addUICorner(sendButton, UDim.new(0, 12))
+addUIGradient(sendButton, softOrangeGradient, 68)
+addButtonStroke(sendButton, 180, 0.35)
 
 do
     local scale = Instance.new("UIScale")
     scale.Scale = 1
-    scale.Parent = UI_Elements.sendButton
+    scale.Parent = sendButton
     local bouncing = false
     local function bounceOnce()
         if bouncing then
@@ -4120,7 +4131,7 @@ do
             end)
         end)
     end
-    UI_Elements.sendButton.MouseButton1Click:Connect(bounceOnce)
+    sendButton.MouseButton1Click:Connect(bounceOnce)
 end
 
 updateAdminUI = function()
@@ -4135,7 +4146,7 @@ updateAdminUI = function()
         end
         return
     end
-    if atAllButton or not UI_Elements.inputArea or not messageInput then
+    if atAllButton or not inputArea or not messageInput then
         return
     end
     atAllButton = Instance.new("TextButton")
@@ -4143,7 +4154,7 @@ updateAdminUI = function()
     atAllButton.Size = UDim2.new(0, 40, 0, 26)
     atAllButton.Position = UDim2.new(0, 38 + 32 + 6, 0.5, 0)
     atAllButton.AnchorPoint = Vector2.new(0, 0.5)
-    atAllButton.BackgroundColor3 = ChatConstants.softPurpleColor
+    atAllButton.BackgroundColor3 = softPurpleColor
     atAllButton.BorderSizePixel = 0
     atAllButton.Font = Enum.Font.GothamBold
     atAllButton.Text = "@全体"
@@ -4151,10 +4162,10 @@ updateAdminUI = function()
     atAllButton.TextSize = 12
     atAllButton.AutoButtonColor = false
     atAllButton.ZIndex = 12
-    atAllButton.Parent = UI_Elements.inputArea
+    atAllButton.Parent = inputArea
 
     addUICorner(atAllButton, UDim.new(0, 12))
-    addUIGradient(atAllButton, ChatConstants.softPurpleGradient, 68)
+    addUIGradient(atAllButton, softPurpleGradient, 68)
     addButtonStroke(atAllButton, 180, 0.35)
 
     atAllButton.MouseEnter:Connect(function()
@@ -4180,14 +4191,14 @@ end
 
 updateAdminUI()
 
-UI_Elements.sendButton.MouseEnter:Connect(function()
-    tweenProperty(UI_Elements.sendButton, {BackgroundTransparency = 0.15}, 0.15)
+sendButton.MouseEnter:Connect(function()
+    tweenProperty(sendButton, {BackgroundTransparency = 0.15}, 0.15)
 end)
-UI_Elements.sendButton.MouseLeave:Connect(function()
-    tweenProperty(UI_Elements.sendButton, {BackgroundTransparency = 0.35}, 0.15)
+sendButton.MouseLeave:Connect(function()
+    tweenProperty(sendButton, {BackgroundTransparency = 0.35}, 0.15)
 end)
 
-function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, hideConflicts)
+function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts)
     local remoteEmoji = {
         loadedByMode = { image = false, background = false },
         loading = false,
@@ -4221,8 +4232,8 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
 
     addUICorner(remoteEmoji.panel, UDim.new(0, 12))
     local remoteEmojiStroke = addUIStroke(remoteEmoji.panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(remoteEmojiStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(remoteEmoji.panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(remoteEmojiStroke, strokeGradient, 180)
+    addUIGradient(remoteEmoji.panel, backgroundGradient, 68)
 
     local remoteHeader = Instance.new("Frame")
     remoteHeader.Name = "Header"
@@ -4343,7 +4354,7 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
             remoteEmoji.autoPopupToggle.Text = "开"
         else
             remoteEmoji.autoPopupToggle.BackgroundColor3 = backgroundSecondary
-            remoteEmoji.autoPopupToggle.Text = "�?
+            remoteEmoji.autoPopupToggle.Text = "关"
         end
     end
 
@@ -4372,7 +4383,7 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
         saveChatSettings()
         updateAutoPopupToggleVisual()
         if autoPopupEnabled then
-            createNotification(gui, "已保存，下次加载UI不弹�?, false)
+            createNotification(gui, "已保存，下次加载UI不弹出", false)
         else
             createNotification(gui, "已保存，下次加载聊天UI弹出", false)
         end
@@ -4380,7 +4391,7 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
 
     remoteEmoji.restoreBgButton.MouseButton1Click:Connect(function()
         ThirdGenChat_ClearBackground()
-        createNotification(gui, "已恢复默认背�?, false)
+        createNotification(gui, "已恢复默认背景", false)
     end)
 
     remoteEmoji.scroll = Instance.new("ScrollingFrame")
@@ -4571,7 +4582,7 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
                         remoteEmoji.panel.Visible = false
                         if isBackground then
                             ThirdGenChat_SetBackgroundRemote(fileUrl, fileName)
-                            createNotification(gui, "已设置聊天背�?, false)
+                            createNotification(gui, "已设置聊天背景", false)
                         else
                             if not messageInput then
                                 return
@@ -4627,7 +4638,7 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
                             img.MouseButton1Click:Connect(function()
                                 remoteEmoji.panel.Visible = false
                                 ThirdGenChat_SetBackgroundLocal(p)
-                                    createNotification(gui, "已设置聊天背�?, false)
+                                    createNotification(gui, "已设置聊天背景", false)
                                 end)
                         end
                     end
@@ -4649,19 +4660,19 @@ function createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, h
     remoteEmoji.button.Name = "RemoteEmojiButton"
     remoteEmoji.button.Size = UDim2.new(0, 28, 0, 28)
     remoteEmoji.button.Position = UDim2.new(1, -70 - 28 - 4, 0, 8)
-    remoteEmoji.button.BackgroundColor3 = ChatConstants.softPurpleColor
+    remoteEmoji.button.BackgroundColor3 = softPurpleColor
     remoteEmoji.button.BackgroundTransparency = 0.35
     remoteEmoji.button.BorderSizePixel = 0
     remoteEmoji.button.Font = Enum.Font.GothamBold
-    remoteEmoji.button.Text = "�?
+    remoteEmoji.button.Text = "图"
     remoteEmoji.button.TextColor3 = textColor
     remoteEmoji.button.TextSize = 14
     remoteEmoji.button.AutoButtonColor = false
     remoteEmoji.button.ZIndex = 12
-    remoteEmoji.button.Parent = UI_Elements.headerBar
+    remoteEmoji.button.Parent = headerBar
 
     addUICorner(remoteEmoji.button, UDim.new(0, 6))
-    addUIGradient(remoteEmoji.button, ChatConstants.softPurpleGradient, 68)
+    addUIGradient(remoteEmoji.button, softPurpleGradient, 68)
     addButtonStroke(remoteEmoji.button, 180, 0.45)
     attachClickBounce(remoteEmoji.button)
 
@@ -4719,64 +4730,71 @@ do
 
     addUICorner(emojiPanel, UDim.new(0, 10))
     local emojiStroke = addUIStroke(emojiPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(emojiStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(emojiPanel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(emojiStroke, strokeGradient, 180)
+    addUIGradient(emojiPanel, backgroundGradient, 68)
 end
 
-UI_Elements = {}
-local UI_Panels = {}
-_G.ThirdGenChat_UI = UI_Panels
+local customColorPanel
+local customColorArea
+local fontColorPanel
+local bubblePalettePanel
+local bubbleBorderPanel
+local avatarBorderPanel
+local avatarBorderQuickPanel
+local avatarBorderSolidPanel
+local dynamicBubblePanel
 local isAdminUser = isAdminName(userName)
 local regularBubbleRemovedColor = Color3.fromRGB(140, 200, 255)
 local regularBubbleCoffeeColor = Color3.fromRGB(160, 120, 80)
+local colorPanel
 local randomColorPool = {}
 
-remoteEmoji = createRemoteEmojiUI(chatContent, UI_Elements.headerBar, messageInput, function()
+remoteEmoji = createRemoteEmojiUI(chatContent, headerBar, messageInput, function()
     emojiPanel.Visible = false
-    if UI_Panels.colorPanel and UI_Panels.colorPanel.Visible then
-        UI_Panels.colorPanel.Visible = false
+    if colorPanel and colorPanel.Visible then
+        colorPanel.Visible = false
     end
-    if UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible then
-        UI_Panels.customColorPanel.Visible = false
+    if customColorPanel and customColorPanel.Visible then
+        customColorPanel.Visible = false
     end
-    if UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible then
-        UI_Panels.fontColorPanel.Visible = false
+    if fontColorPanel and fontColorPanel.Visible then
+        fontColorPanel.Visible = false
     end
-    if UI_Panels.avatarBorderQuickPanel and UI_Panels.avatarBorderQuickPanel.Visible then
-        UI_Panels.avatarBorderQuickPanel.Visible = false
+    if avatarBorderQuickPanel and avatarBorderQuickPanel.Visible then
+        avatarBorderQuickPanel.Visible = false
     end
-    if UI_Panels.bubblePalettePanel and UI_Panels.bubblePalettePanel.Visible then
-        UI_Panels.bubblePalettePanel.Visible = false
+    if bubblePalettePanel and bubblePalettePanel.Visible then
+        bubblePalettePanel.Visible = false
     end
-    if UI_Panels.bubbleBorderPanel and UI_Panels.bubbleBorderPanel.Visible then
-        UI_Panels.bubbleBorderPanel.Visible = false
+    if bubbleBorderPanel and bubbleBorderPanel.Visible then
+        bubbleBorderPanel.Visible = false
     end
-    if UI_Panels.avatarBorderPanel and UI_Panels.avatarBorderPanel.Visible then
-        UI_Panels.avatarBorderPanel.Visible = false
+    if avatarBorderPanel and avatarBorderPanel.Visible then
+        avatarBorderPanel.Visible = false
     end
-    if UI_Panels.avatarBorderSolidPanel and UI_Panels.avatarBorderSolidPanel.Visible then
-        UI_Panels.avatarBorderSolidPanel.Visible = false
+    if avatarBorderSolidPanel and avatarBorderSolidPanel.Visible then
+        avatarBorderSolidPanel.Visible = false
     end
-    if UI_Panels.dynamicBubblePanel and UI_Panels.dynamicBubblePanel.Visible then
-        UI_Panels.dynamicBubblePanel.Visible = false
+    if dynamicBubblePanel and dynamicBubblePanel.Visible then
+        dynamicBubblePanel.Visible = false
     end
 end)
 
 do
-    UI_Panels.avatarBorderQuickPanel = Instance.new("Frame")
-    UI_Panels.avatarBorderQuickPanel.Name = "AvatarBorderQuickPanel"
-    UI_Panels.avatarBorderQuickPanel.Size = UDim2.new(0, 180, 0, 96)
-    UI_Panels.avatarBorderQuickPanel.AnchorPoint = Vector2.new(0, 1)
-    UI_Panels.avatarBorderQuickPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
-    UI_Panels.avatarBorderQuickPanel.BackgroundColor3 = backgroundTertiary
-    UI_Panels.avatarBorderQuickPanel.BorderSizePixel = 0
-    UI_Panels.avatarBorderQuickPanel.Visible = false
-    UI_Panels.avatarBorderQuickPanel.ZIndex = 21
-    UI_Panels.avatarBorderQuickPanel.Parent = chatContent
-    addUICorner(UI_Panels.avatarBorderQuickPanel, UDim.new(0, 10))
-    local panelStroke = addUIStroke(UI_Panels.avatarBorderQuickPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(panelStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(UI_Panels.avatarBorderQuickPanel, ChatConstants.backgroundGradient, 68)
+    avatarBorderQuickPanel = Instance.new("Frame")
+    avatarBorderQuickPanel.Name = "AvatarBorderQuickPanel"
+    avatarBorderQuickPanel.Size = UDim2.new(0, 180, 0, 96)
+    avatarBorderQuickPanel.AnchorPoint = Vector2.new(0, 1)
+    avatarBorderQuickPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
+    avatarBorderQuickPanel.BackgroundColor3 = backgroundTertiary
+    avatarBorderQuickPanel.BorderSizePixel = 0
+    avatarBorderQuickPanel.Visible = false
+    avatarBorderQuickPanel.ZIndex = 21
+    avatarBorderQuickPanel.Parent = chatContent
+    addUICorner(avatarBorderQuickPanel, UDim.new(0, 10))
+    local panelStroke = addUIStroke(avatarBorderQuickPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
+    addStrokeGradient(panelStroke, strokeGradient, 180)
+    addUIGradient(avatarBorderQuickPanel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -4789,7 +4807,7 @@ do
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 22
-    title.Parent = UI_Panels.avatarBorderQuickPanel
+    title.Parent = avatarBorderQuickPanel
 
     local closeBtn = Instance.new("TextButton")
     closeBtn.Name = "Close"
@@ -4802,9 +4820,9 @@ do
     closeBtn.TextSize = 16
     closeBtn.AutoButtonColor = false
     closeBtn.ZIndex = 22
-    closeBtn.Parent = UI_Panels.avatarBorderQuickPanel
+    closeBtn.Parent = avatarBorderQuickPanel
     closeBtn.MouseButton1Click:Connect(function()
-        UI_Panels.avatarBorderQuickPanel.Visible = false
+        avatarBorderQuickPanel.Visible = false
     end)
 
     local gridHost = Instance.new("Frame")
@@ -4814,7 +4832,7 @@ do
     gridHost.BackgroundTransparency = 1
     gridHost.BorderSizePixel = 0
     gridHost.ZIndex = 22
-    gridHost.Parent = UI_Panels.avatarBorderQuickPanel
+    gridHost.Parent = avatarBorderQuickPanel
 
     local grid = Instance.new("UIGridLayout")
     grid.CellSize = UDim2.new(0, 78, 0, 22)
@@ -4852,7 +4870,7 @@ do
         b.MouseButton1Click:Connect(function()
             selfAvatarBorderId = math.max(0, math.floor(tonumber(borderId) or 0))
             saveChatColorConfig()
-            UI_Panels.avatarBorderQuickPanel.Visible = false
+            avatarBorderQuickPanel.Visible = false
         end)
     end
 
@@ -4862,30 +4880,29 @@ do
 end
 
 do
-do
     if not isAdminUser and typeof(selfBubbleColor) == "Color3" and selfBubbleColor == regularBubbleRemovedColor then
         selfBubbleColor = regularBubbleCoffeeColor
         selfBubbleStyle = regularBubbleCoffeeColor
-        if UI_Elements.colorToggle then
-            applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+        if colorToggle then
+            applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
         end
         saveChatColorConfig()
     end
 
-    UI_Panels.colorPanel = Instance.new("Frame")
-    UI_Panels.colorPanel.Name = "ColorPanel"
-    UI_Panels.colorPanel.Size = UDim2.new(0, 240, 0, isAdminUser and 86 or 58)
-    UI_Panels.colorPanel.Position = isAdminUser and UDim2.new(0, 8, 1, -140) or UDim2.new(0, 8, 1, -108)
-    UI_Panels.colorPanel.BackgroundColor3 = backgroundTertiary
-    UI_Panels.colorPanel.BorderSizePixel = 0
-    UI_Panels.colorPanel.Visible = false
-    UI_Panels.colorPanel.ZIndex = 20
-    UI_Panels.colorPanel.Parent = chatContent
+    colorPanel = Instance.new("Frame")
+    colorPanel.Name = "ColorPanel"
+    colorPanel.Size = UDim2.new(0, 240, 0, isAdminUser and 86 or 58)
+    colorPanel.Position = isAdminUser and UDim2.new(0, 8, 1, -140) or UDim2.new(0, 8, 1, -108)
+    colorPanel.BackgroundColor3 = backgroundTertiary
+    colorPanel.BorderSizePixel = 0
+    colorPanel.Visible = false
+    colorPanel.ZIndex = 20
+    colorPanel.Parent = chatContent
 
-    addUICorner(UI_Panels.colorPanel, UDim.new(0, 10))
-    local colorStroke = addUIStroke(UI_Panels.colorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(colorStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(UI_Panels.colorPanel, ChatConstants.backgroundGradient, 68)
+    addUICorner(colorPanel, UDim.new(0, 10))
+    local colorStroke = addUIStroke(colorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
+    addStrokeGradient(colorStroke, strokeGradient, 180)
+    addUIGradient(colorPanel, backgroundGradient, 68)
 
     local colorGrid = Instance.new("UIGridLayout")
     colorGrid.CellSize = UDim2.new(0, 56, 0, 24)
@@ -4893,7 +4910,7 @@ do
     colorGrid.FillDirection = Enum.FillDirection.Horizontal
     colorGrid.FillDirectionMaxCells = 4
     colorGrid.SortOrder = Enum.SortOrder.LayoutOrder
-    colorGrid.Parent = UI_Panels.colorPanel
+    colorGrid.Parent = colorPanel
 
     local allColorOptions = {
         Color3.fromRGB(120, 140, 255),
@@ -4975,7 +4992,7 @@ do
         btn.AutoButtonColor = false
         btn.LayoutOrder = 100 + i
         btn.ZIndex = 21
-        btn.Parent = UI_Panels.colorPanel
+        btn.Parent = colorPanel
         addUICorner(btn, UDim.new(0, 6))
 
         local stroke = addUIStroke(btn, Color3.fromRGB(255, 255, 255), 1, 0.3)
@@ -4991,12 +5008,11 @@ do
         btn.MouseButton1Click:Connect(function()
             selfBubbleColor = c
             selfBubbleStyle = c
-            applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
-            UI_Panels.colorPanel.Visible = false
+            applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
+            colorPanel.Visible = false
             saveChatColorConfig()
         end)
     end
-end
 
     applyChatFontColorToExistingMessages = function()
         if messageInput and messageInput:IsA("TextBox") then
@@ -5026,22 +5042,22 @@ end
     fontButton.AutoButtonColor = false
     fontButton.LayoutOrder = 4
     fontButton.ZIndex = 22
-    fontButton.Parent = UI_Panels.colorPanel
+    fontButton.Parent = colorPanel
     addUICorner(fontButton, UDim.new(0, 8))
     addButtonStroke(fontButton, 180, 0.3)
 
     fontButton.MouseButton1Click:Connect(function()
         emojiPanel.Visible = false
         remoteEmoji.panel.Visible = false
-        UI_Panels.colorPanel.Visible = false
-        if UI_Panels.customColorPanel then
-            UI_Panels.customColorPanel.Visible = false
+        colorPanel.Visible = false
+        if customColorPanel then
+            customColorPanel.Visible = false
         end
-        if UI_Panels.avatarBorderQuickPanel then
-            UI_Panels.avatarBorderQuickPanel.Visible = false
+        if avatarBorderQuickPanel then
+            avatarBorderQuickPanel.Visible = false
         end
-        if UI_Panels.fontColorPanel then
-            UI_Panels.fontColorPanel.Visible = not UI_Panels.fontColorPanel.Visible
+        if fontColorPanel then
+            fontColorPanel.Visible = not fontColorPanel.Visible
         end
     end)
 
@@ -5060,37 +5076,37 @@ end
         customBubbleButton.AutoButtonColor = false
         customBubbleButton.LayoutOrder = 6
         customBubbleButton.ZIndex = 22
-        customBubbleButton.Parent = UI_Panels.colorPanel
+        customBubbleButton.Parent = colorPanel
         addUICorner(customBubbleButton, UDim.new(0, 8))
         addButtonStroke(customBubbleButton, 180, 0.3)
 
         customBubbleButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.avatarBorderQuickPanel then
-                UI_Panels.avatarBorderQuickPanel.Visible = false
+            colorPanel.Visible = false
+            if avatarBorderQuickPanel then
+                avatarBorderQuickPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = not UI_Panels.customColorPanel.Visible
+            if customColorPanel then
+                customColorPanel.Visible = not customColorPanel.Visible
             end
         end)
 
@@ -5108,39 +5124,39 @@ end
         avatarQuickButton.AutoButtonColor = false
         avatarQuickButton.LayoutOrder = 5
         avatarQuickButton.ZIndex = 22
-        avatarQuickButton.Parent = UI_Panels.colorPanel
+        avatarQuickButton.Parent = colorPanel
         addUICorner(avatarQuickButton, UDim.new(0, 8))
         addButtonStroke(avatarQuickButton, 180, 0.3)
 
         avatarQuickButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderQuickPanel then
+            if avatarBorderQuickPanel then
                 local container = chatContent
-                if container and avatarQuickButton and UI_Panels.avatarBorderQuickPanel then
+                if container and avatarQuickButton and avatarBorderQuickPanel then
                     local containerPos = container.AbsolutePosition
                     local containerSize = container.AbsoluteSize
                     local btnPos = avatarQuickButton.AbsolutePosition
                     local btnSize = avatarQuickButton.AbsoluteSize
-                    local panelSize = UI_Panels.avatarBorderQuickPanel.AbsoluteSize
-                    local panelW = (panelSize and panelSize.X > 0) and panelSize.X or (UI_Panels.avatarBorderQuickPanel.Size.X.Offset or 180)
-                    local panelH = (panelSize and panelSize.Y > 0) and panelSize.Y or (UI_Panels.avatarBorderQuickPanel.Size.Y.Offset or 96)
+                    local panelSize = avatarBorderQuickPanel.AbsoluteSize
+                    local panelW = (panelSize and panelSize.X > 0) and panelSize.X or (avatarBorderQuickPanel.Size.X.Offset or 180)
+                    local panelH = (panelSize and panelSize.Y > 0) and panelSize.Y or (avatarBorderQuickPanel.Size.Y.Offset or 96)
                     local desiredX = (btnPos.X - containerPos.X) - panelW - 6
                     local desiredY = (btnPos.Y - containerPos.Y) + btnSize.Y + 4
                     local minX = 8
@@ -5149,9 +5165,9 @@ end
                     local maxY = math.max(minY, (containerSize.Y - 8))
                     local clampedX = math.clamp(desiredX, minX, maxX)
                     local clampedY = math.clamp(desiredY, minY, maxY)
-                    UI_Panels.avatarBorderQuickPanel.Position = UDim2.fromOffset(clampedX, clampedY)
+                    avatarBorderQuickPanel.Position = UDim2.fromOffset(clampedX, clampedY)
                 end
-                UI_Panels.avatarBorderQuickPanel.Visible = not UI_Panels.avatarBorderQuickPanel.Visible
+                avatarBorderQuickPanel.Visible = not avatarBorderQuickPanel.Visible
             end
         end)
     end
@@ -5165,37 +5181,37 @@ end
         customOpenButton.BackgroundColor3 = backgroundSecondary
         customOpenButton.BorderSizePixel = 0
         customOpenButton.Font = Enum.Font.GothamBold
-        customOpenButton.Text = "自定义气泡颜�?
+        customOpenButton.Text = "自定义气泡颜色"
         customOpenButton.TextColor3 = textColor
         customOpenButton.TextSize = 11
         customOpenButton.AutoButtonColor = false
         customOpenButton.LayoutOrder = 3
         customOpenButton.ZIndex = 22
-        customOpenButton.Parent = UI_Panels.colorPanel
+        customOpenButton.Parent = colorPanel
         addUICorner(customOpenButton, UDim.new(0, 8))
         addButtonStroke(customOpenButton, 180, 0.3)
 
         customOpenButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = not UI_Panels.customColorPanel.Visible
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = not customColorPanel.Visible
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
         end)
     end
@@ -5216,34 +5232,34 @@ end
         paletteButton.AutoButtonColor = false
         paletteButton.LayoutOrder = 2
         paletteButton.ZIndex = 22
-        paletteButton.Parent = UI_Panels.colorPanel
+        paletteButton.Parent = colorPanel
         addUICorner(paletteButton, UDim.new(0, 8))
         addButtonStroke(paletteButton, 180, 0.3)
 
         paletteButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = not UI_Panels.bubblePalettePanel.Visible
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = not bubblePalettePanel.Visible
             end
         end)
 
@@ -5261,34 +5277,34 @@ end
         borderButton.AutoButtonColor = false
         borderButton.LayoutOrder = 1
         borderButton.ZIndex = 22
-        borderButton.Parent = UI_Panels.colorPanel
+        borderButton.Parent = colorPanel
         addUICorner(borderButton, UDim.new(0, 8))
         addButtonStroke(borderButton, 180, 0.3)
 
         borderButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = not UI_Panels.bubbleBorderPanel.Visible
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = not bubbleBorderPanel.Visible
             end
         end)
 
@@ -5304,34 +5320,34 @@ end
         avatarBorderButton.AutoButtonColor = false
         avatarBorderButton.LayoutOrder = 6
         avatarBorderButton.ZIndex = 22
-        avatarBorderButton.Parent = UI_Panels.colorPanel
+        avatarBorderButton.Parent = colorPanel
         addUICorner(avatarBorderButton, UDim.new(0, 8))
         addButtonStroke(avatarBorderButton, 180, 0.3)
 
         avatarBorderButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = not UI_Panels.avatarBorderPanel.Visible
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = not avatarBorderPanel.Visible
             end
         end)
 
@@ -5341,40 +5357,40 @@ end
         avatarBorderSolidButton.BackgroundColor3 = backgroundSecondary
         avatarBorderSolidButton.BorderSizePixel = 0
         avatarBorderSolidButton.Font = Enum.Font.GothamBold
-        avatarBorderSolidButton.Text = "普通边�?
+        avatarBorderSolidButton.Text = "普通边框"
         avatarBorderSolidButton.TextColor3 = textColor
         avatarBorderSolidButton.TextSize = 11
         avatarBorderSolidButton.AutoButtonColor = false
         avatarBorderSolidButton.LayoutOrder = 7
         avatarBorderSolidButton.ZIndex = 22
-        avatarBorderSolidButton.Parent = UI_Panels.colorPanel
+        avatarBorderSolidButton.Parent = colorPanel
         addUICorner(avatarBorderSolidButton, UDim.new(0, 8))
         addButtonStroke(avatarBorderSolidButton, 180, 0.3)
 
         avatarBorderSolidButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = not UI_Panels.avatarBorderSolidPanel.Visible
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = not avatarBorderSolidPanel.Visible
             end
         end)
 
@@ -5384,40 +5400,40 @@ end
         dynamicBubbleButton.BackgroundColor3 = backgroundSecondary
         dynamicBubbleButton.BorderSizePixel = 0
         dynamicBubbleButton.Font = Enum.Font.GothamBold
-        dynamicBubbleButton.Text = "动态气�?
+        dynamicBubbleButton.Text = "动态气泡"
         dynamicBubbleButton.TextColor3 = textColor
         dynamicBubbleButton.TextSize = 11
         dynamicBubbleButton.AutoButtonColor = false
         dynamicBubbleButton.LayoutOrder = 8
         dynamicBubbleButton.ZIndex = 22
-        dynamicBubbleButton.Parent = UI_Panels.colorPanel
+        dynamicBubbleButton.Parent = colorPanel
         addUICorner(dynamicBubbleButton, UDim.new(0, 8))
         addButtonStroke(dynamicBubbleButton, 180, 0.3)
 
         dynamicBubbleButton.MouseButton1Click:Connect(function()
             emojiPanel.Visible = false
             remoteEmoji.panel.Visible = false
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = not UI_Panels.dynamicBubblePanel.Visible
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = not dynamicBubblePanel.Visible
             end
         end)
 
@@ -5436,7 +5452,7 @@ end
         randomButton.AutoButtonColor = false
         randomButton.LayoutOrder = 5
         randomButton.ZIndex = 22
-        randomButton.Parent = UI_Panels.colorPanel
+        randomButton.Parent = colorPanel
         addUICorner(randomButton, UDim.new(0, 8))
         addButtonStroke(randomButton, 180, 0.3)
 
@@ -5456,24 +5472,24 @@ end
             randomColorEnabled = not randomColorEnabled
             updateRandomButtonVisual()
             saveChatColorConfig()
-            UI_Panels.colorPanel.Visible = false
-            if UI_Panels.customColorPanel then
-                UI_Panels.customColorPanel.Visible = false
+            colorPanel.Visible = false
+            if customColorPanel then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel then
+                dynamicBubblePanel.Visible = false
             end
         end)
     end
@@ -5500,8 +5516,8 @@ local function createBubblePalettePanel()
     panel.Parent = chatContent
     addUICorner(panel, UDim.new(0, 10))
     local paletteStroke = addUIStroke(panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(paletteStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(paletteStroke, strokeGradient, 180)
+    addUIGradient(panel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -5590,8 +5606,8 @@ local function createBubblePalettePanel()
             local colors = { def[1], def[2], def[3] }
             selfBubbleStyle = { type = "gradient", colors = colors }
             selfBubbleColor = colors[1]
-            if UI_Elements.colorToggle then
-                applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+            if colorToggle then
+                applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
             end
             saveChatColorConfig()
             panel.Visible = false
@@ -5612,8 +5628,8 @@ local function createDynamicBubblePanel()
     panel.Parent = chatContent
     addUICorner(panel, UDim.new(0, 10))
     local paletteStroke = addUIStroke(panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(paletteStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(paletteStroke, strokeGradient, 180)
+    addUIGradient(panel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -5621,7 +5637,7 @@ local function createDynamicBubblePanel()
     title.Position = UDim2.new(0, 10, 0, 6)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.Text = "动态气�?
+    title.Text = "动态气泡"
     title.TextColor3 = textColor
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -5659,7 +5675,7 @@ local function createDynamicBubblePanel()
     grid.Parent = gridHost
 
     for i = 1, 15 do
-        local def = ChatConstants.dynamicBubbleDefs[i]
+        local def = dynamicBubbleDefs[i]
         if def and type(def.colors) == "table" and def.colors[1] and def.colors[2] and def.colors[3] then
             local btn = Instance.new("TextButton")
             btn.Name = "DynamicBubble" .. tostring(i)
@@ -5685,8 +5701,8 @@ local function createDynamicBubblePanel()
             btn.MouseButton1Click:Connect(function()
                 selfBubbleStyle = style
                 selfBubbleColor = style.colors[1]
-                if UI_Elements.colorToggle then
-                    applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+                if colorToggle then
+                    applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
                 end
                 saveChatColorConfig()
                 panel.Visible = false
@@ -5709,8 +5725,8 @@ local function createBubbleBorderPanel()
     panel.Parent = chatContent
     addUICorner(panel, UDim.new(0, 10))
     local borderStroke = addUIStroke(panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(borderStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(borderStroke, strokeGradient, 180)
+    addUIGradient(panel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -5756,7 +5772,7 @@ local function createBubbleBorderPanel()
     grid.Parent = gridHost
 
     for i = 1, 12 do
-        local def = ChatConstants.bubbleBorderDefs[i]
+        local def = bubbleBorderDefs[i]
         if def then
             local btn = Instance.new("TextButton")
             btn.Name = "Border" .. tostring(i)
@@ -5779,8 +5795,8 @@ local function createBubbleBorderPanel()
                 else
                     selfBubbleBorderId = i
                 end
-                if UI_Elements.colorToggle then
-                    applyBubbleBorderToFrame(UI_Elements.colorToggle, isAdminName(userName) and selfBubbleBorderId or 0)
+                if colorToggle then
+                    applyBubbleBorderToFrame(colorToggle, isAdminName(userName) and selfBubbleBorderId or 0)
                 end
                 saveChatColorConfig()
                 panel.Visible = false
@@ -5803,8 +5819,8 @@ local function createAvatarSolidBorderPanel()
     panel.Parent = chatContent
     addUICorner(panel, UDim.new(0, 10))
     local borderStroke = addUIStroke(panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(borderStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(borderStroke, strokeGradient, 180)
+    addUIGradient(panel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -5812,7 +5828,7 @@ local function createAvatarSolidBorderPanel()
     title.Position = UDim2.new(0, 10, 0, 6)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.Text = "普通边�?
+    title.Text = "普通边框"
     title.TextColor3 = textColor
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -5849,7 +5865,7 @@ local function createAvatarSolidBorderPanel()
     grid.CellPadding = UDim2.new(0, 4, 0, 4)
     grid.Parent = gridHost
 
-    for i, c in ipairs(ChatConstants.avatarBorderSolidColors) do
+    for i, c in ipairs(avatarBorderSolidColors) do
         local borderId = 100 + i
         local btn = Instance.new("TextButton")
         btn.Name = "SolidBorder" .. tostring(i)
@@ -5893,8 +5909,8 @@ local function createAvatarBorderPanel()
     panel.Parent = chatContent
     addUICorner(panel, UDim.new(0, 10))
     local borderStroke = addUIStroke(panel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(borderStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(panel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(borderStroke, strokeGradient, 180)
+    addUIGradient(panel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -5916,7 +5932,7 @@ local function createAvatarBorderPanel()
     normalBtn.BackgroundColor3 = backgroundSecondary
     normalBtn.BorderSizePixel = 0
     normalBtn.Font = Enum.Font.GothamBold
-    normalBtn.Text = "普通边�?
+    normalBtn.Text = "普通边框"
     normalBtn.TextColor3 = textColor
     normalBtn.TextSize = 11
     normalBtn.AutoButtonColor = false
@@ -5962,7 +5978,7 @@ local function createAvatarBorderPanel()
     grid.Parent = gridHost
 
     for i = 1, 12 do
-        local def = ChatConstants.avatarBorderDefs[i]
+        local def = avatarBorderDefs[i]
         if def and def.gradient then
             local btn = Instance.new("TextButton")
             btn.Name = "Border" .. tostring(i)
@@ -6007,8 +6023,8 @@ do
 
     addUICorner(customColorPanel, UDim.new(0, 10))
     local customStroke = addUIStroke(customColorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(customStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(customColorPanel, ChatConstants.backgroundGradient, 68)
+    addStrokeGradient(customStroke, strokeGradient, 180)
+    addUIGradient(customColorPanel, backgroundGradient, 68)
 
     local colorArea = Instance.new("Frame")
     colorArea.Name = "ColorArea"
@@ -6060,7 +6076,7 @@ do
         selfBubbleColor = c
         selfBubbleStyle = c
         lastCustomColor = c
-        applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+        applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
         indicator.Position = UDim2.new(rx, 0, ry, 0)
     end
 
@@ -6144,7 +6160,7 @@ do
                 local c = startColor:Lerp(endColor, t)
                 selfBubbleColor = c
                 selfBubbleStyle = c
-                applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+                applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
                 saveChatColorConfig()
                 customColorPanel.Visible = false
             end
@@ -6154,27 +6170,27 @@ do
     for _, def in ipairs(stripeDefs) do
         createStripe(def[1], def[2])
     end
-    UI_Panels.bubblePalettePanel = createBubblePalettePanel()
-    UI_Panels.dynamicBubblePanel = createDynamicBubblePanel()
-    UI_Panels.bubbleBorderPanel = createBubbleBorderPanel()
-    UI_Panels.avatarBorderPanel = createAvatarBorderPanel()
-    UI_Panels.avatarBorderSolidPanel = createAvatarSolidBorderPanel()
+    bubblePalettePanel = createBubblePalettePanel()
+    dynamicBubblePanel = createDynamicBubblePanel()
+    bubbleBorderPanel = createBubbleBorderPanel()
+    avatarBorderPanel = createAvatarBorderPanel()
+    avatarBorderSolidPanel = createAvatarSolidBorderPanel()
 end
 
 do
-    UI_Panels.fontColorPanel = Instance.new("Frame")
-    UI_Panels.fontColorPanel.Name = "FontColorPanel"
-    UI_Panels.fontColorPanel.Size = UDim2.new(0, 180, 0, isAdminUser and 150 or 96)
-    UI_Panels.fontColorPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
-    UI_Panels.fontColorPanel.BackgroundColor3 = backgroundTertiary
-    UI_Panels.fontColorPanel.BorderSizePixel = 0
-    UI_Panels.fontColorPanel.Visible = false
-    UI_Panels.fontColorPanel.ZIndex = 21
-    UI_Panels.fontColorPanel.Parent = chatContent
-    addUICorner(UI_Panels.fontColorPanel, UDim.new(0, 10))
-    local fontStroke = addUIStroke(UI_Panels.fontColorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
-    addStrokeGradient(fontStroke, ChatConstants.strokeGradient, 180)
-    addUIGradient(UI_Panels.fontColorPanel, ChatConstants.backgroundGradient, 68)
+    fontColorPanel = Instance.new("Frame")
+    fontColorPanel.Name = "FontColorPanel"
+    fontColorPanel.Size = UDim2.new(0, 180, 0, isAdminUser and 150 or 96)
+    fontColorPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
+    fontColorPanel.BackgroundColor3 = backgroundTertiary
+    fontColorPanel.BorderSizePixel = 0
+    fontColorPanel.Visible = false
+    fontColorPanel.ZIndex = 21
+    fontColorPanel.Parent = chatContent
+    addUICorner(fontColorPanel, UDim.new(0, 10))
+    local fontStroke = addUIStroke(fontColorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
+    addStrokeGradient(fontStroke, strokeGradient, 180)
+    addUIGradient(fontColorPanel, backgroundGradient, 68)
 
     local title = Instance.new("TextLabel")
     title.Name = "Title"
@@ -6187,7 +6203,7 @@ do
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.ZIndex = 22
-    title.Parent = UI_Panels.fontColorPanel
+    title.Parent = fontColorPanel
 
     local closeBtn = Instance.new("TextButton")
     closeBtn.Name = "Close"
@@ -6200,9 +6216,9 @@ do
     closeBtn.TextSize = 16
     closeBtn.AutoButtonColor = false
     closeBtn.ZIndex = 22
-    closeBtn.Parent = UI_Panels.fontColorPanel
+    closeBtn.Parent = fontColorPanel
     closeBtn.MouseButton1Click:Connect(function()
-        UI_Panels.fontColorPanel.Visible = false
+        fontColorPanel.Visible = false
     end)
 
     local function makePickButton(parent, pos, size, c, labelText)
@@ -6224,7 +6240,7 @@ do
             if setChatFontColor then
                 setChatFontColor(c)
             end
-            UI_Panels.fontColorPanel.Visible = false
+            fontColorPanel.Visible = false
         end)
         return b
     end
@@ -6237,7 +6253,7 @@ do
         gridHost.BackgroundTransparency = 1
         gridHost.BorderSizePixel = 0
         gridHost.ZIndex = 22
-        gridHost.Parent = UI_Panels.fontColorPanel
+        gridHost.Parent = fontColorPanel
 
         local grid = Instance.new("UIGridLayout")
         grid.CellSize = UDim2.new(0, 78, 0, 22)
@@ -6264,7 +6280,7 @@ do
                 if setChatFontColor then
                     setChatFontColor(c)
                 end
-                UI_Panels.fontColorPanel.Visible = false
+                fontColorPanel.Visible = false
             end)
         end
 
@@ -6279,7 +6295,7 @@ do
         hueBar.BackgroundColor3 = Color3.new(1, 1, 1)
         hueBar.BorderSizePixel = 0
         hueBar.ZIndex = 22
-        hueBar.Parent = UI_Panels.fontColorPanel
+        hueBar.Parent = fontColorPanel
         hueBar.ClipsDescendants = true
         addUICorner(hueBar, UDim.new(0, 8))
 
@@ -6332,7 +6348,7 @@ do
         hueBar.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 pickingHue = false
-                UI_Panels.fontColorPanel.Visible = false
+                fontColorPanel.Visible = false
             end
         end)
         UserInputService.InputChanged:Connect(function(input)
@@ -6351,7 +6367,7 @@ do
         stripesContainer.BackgroundTransparency = 1
         stripesContainer.BorderSizePixel = 0
         stripesContainer.ZIndex = 22
-        stripesContainer.Parent = UI_Panels.fontColorPanel
+        stripesContainer.Parent = fontColorPanel
 
         local stripesLayout = Instance.new("UIListLayout")
         stripesLayout.FillDirection = Enum.FillDirection.Vertical
@@ -6400,7 +6416,7 @@ do
                     if setChatFontColor then
                         setChatFontColor(c)
                     end
-                    UI_Panels.fontColorPanel.Visible = false
+                    fontColorPanel.Visible = false
                 end
             end)
         end
@@ -6411,21 +6427,21 @@ do
     end
 end
 
-UI_Elements.emojiScroll = Instance.new("ScrollingFrame")
-UI_Elements.emojiScroll.Size = UDim2.new(1, -12, 1, -12)
-UI_Elements.emojiScroll.Position = UDim2.new(0, 6, 0, 6)
-UI_Elements.emojiScroll.BackgroundTransparency = 1
-UI_Elements.emojiScroll.ScrollBarThickness = 3
-UI_Elements.emojiScroll.ScrollBarImageColor3 = accentColor
-UI_Elements.emojiScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-UI_Elements.emojiScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-UI_Elements.emojiScroll.ZIndex = 21
-UI_Elements.emojiScroll.Parent = emojiPanel
+local emojiScroll = Instance.new("ScrollingFrame")
+emojiScroll.Size = UDim2.new(1, -12, 1, -12)
+emojiScroll.Position = UDim2.new(0, 6, 0, 6)
+emojiScroll.BackgroundTransparency = 1
+emojiScroll.ScrollBarThickness = 3
+emojiScroll.ScrollBarImageColor3 = accentColor
+emojiScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+emojiScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+emojiScroll.ZIndex = 21
+emojiScroll.Parent = emojiPanel
 
-UI_Elements.emojiGrid = Instance.new("UIGridLayout")
-UI_Elements.emojiGrid.CellSize = UDim2.new(0, 30, 0, 30)
-UI_Elements.emojiGrid.CellPadding = UDim2.new(0, 4, 0, 4)
-UI_Elements.emojiGrid.Parent = UI_Elements.emojiScroll
+local emojiGrid = Instance.new("UIGridLayout")
+emojiGrid.CellSize = UDim2.new(0, 30, 0, 30)
+emojiGrid.CellPadding = UDim2.new(0, 4, 0, 4)
+emojiGrid.Parent = emojiScroll
 
 local emojis = {"🤪","🥴", "🤭", "😀", "😂", "😍", "🥺", "😎", "🤔", "👍", "👎", "❤️", "🔥", "✨", "🎉", "💯", "😮", "🤯", "😱", "🥶", "🥵", "🤮", "🤢", "🙏", "😊", "😢", "😡", "🤣", "😘", "🥰","😈", "👹", "👺", "🤡", "💀", "☠️", "👻", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"}
 
@@ -6438,7 +6454,7 @@ for _, emoji in ipairs(emojis) do
     emojiButton.TextSize = 18
     emojiButton.AutoButtonColor = false
     emojiButton.ZIndex = 22
-    emojiButton.Parent = UI_Elements.emojiScroll
+    emojiButton.Parent = emojiScroll
     addUICorner(emojiButton, UDim.new(0, 6))
     emojiButton.MouseEnter:Connect(function()
         tweenProperty(emojiButton, {BackgroundColor3 = backgroundSecondary}, 0.1)
@@ -6457,36 +6473,36 @@ for _, emoji in ipairs(emojis) do
     end)
 end
 
-UI_Elements.emojiToggle.MouseButton1Click:Connect(function()
-    tweenProperty(UI_Elements.emojiScale, {Scale = 0.9}, 0.05)
+emojiToggle.MouseButton1Click:Connect(function()
+    tweenProperty(emojiScale, {Scale = 0.9}, 0.05)
     task.delay(0.07, function()
-        tweenProperty(UI_Elements.emojiScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
+        tweenProperty(emojiScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
     end)
-    UI_Panels.colorPanel.Visible = false
+    colorPanel.Visible = false
     remoteEmoji.panel.Visible = false
-    if UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible then
-        UI_Panels.customColorPanel.Visible = false
+    if customColorPanel and customColorPanel.Visible then
+        customColorPanel.Visible = false
     end
-    if UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible then
-        UI_Panels.fontColorPanel.Visible = false
+    if fontColorPanel and fontColorPanel.Visible then
+        fontColorPanel.Visible = false
     end
     emojiPanel.Visible = not emojiPanel.Visible
 end)
 
-UI_Elements.colorToggle.MouseButton1Click:Connect(function()
-    tweenProperty(UI_Elements.colorScale, {Scale = 0.9}, 0.05)
+colorToggle.MouseButton1Click:Connect(function()
+    tweenProperty(colorScale, {Scale = 0.9}, 0.05)
     task.delay(0.07, function()
-        tweenProperty(UI_Elements.colorScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
+        tweenProperty(colorScale, {Scale = 1}, 0.12, Enum.EasingStyle.Back)
     end)
     emojiPanel.Visible = false
     remoteEmoji.panel.Visible = false
-    if UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible then
-        UI_Panels.customColorPanel.Visible = false
+    if customColorPanel and customColorPanel.Visible then
+        customColorPanel.Visible = false
     end
-    if UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible then
-        UI_Panels.fontColorPanel.Visible = false
+    if fontColorPanel and fontColorPanel.Visible then
+        fontColorPanel.Visible = false
     end
-    UI_Panels.colorPanel.Visible = not UI_Panels.colorPanel.Visible
+    colorPanel.Visible = not colorPanel.Visible
 end)
 
 local loginParticles = spawnParticlesInFrame(loginParticleLayer, 230, 260)
@@ -6508,13 +6524,13 @@ end)
 
 local function addMessageToUI(msg, name, time, isSelf, animate, bubbleColor, bubbleBorderId, fromServer, avatarBorderId)
     messageCount = messageCount + 1
-    local container = createMessageBubble(UI_Elements.messageArea, msg, name, time, isSelf, messageCount, animate, bubbleColor, bubbleBorderId, avatarBorderId, gui)
+    local container = createMessageBubble(messageArea, msg, name, time, isSelf, messageCount, animate, bubbleColor, bubbleBorderId, avatarBorderId, gui)
     if fromServer and not isSystemName(name) and type(msg) == "string" and type(name) == "string" and type(time) == "string" then
         messageUiByKey[time .. name .. msg] = container
     end
     if animate ~= false then
         task.wait(0.05)
-        UI_Elements.messageArea.CanvasPosition = Vector2.new(0, math.max(0, UI_Elements.messageArea.AbsoluteCanvasSize.Y - UI_Elements.messageArea.AbsoluteSize.Y))
+        messageArea.CanvasPosition = Vector2.new(0, math.max(0, messageArea.AbsoluteCanvasSize.Y - messageArea.AbsoluteSize.Y))
     end
     return container
 end
@@ -6618,9 +6634,9 @@ local function processIncomingMessages(messages, animate)
                                 local displayTime = msg.time or os.date("%H:%M")
                                 if msg.name == userName then
                                     local greenTarget = '<font color="rgb(80,255,120)">' .. tostring(targetName or "") .. "</font>"
-                                    addMessageToUI("你撤回了成员" .. greenTarget .. "的一条消�?, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
+                                    addMessageToUI("你撤回了成员" .. greenTarget .. "的一条消息", sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                                 else
-                                    addMessageToUI("管理员撤回了一条成员消�?, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
+                                    addMessageToUI("管理员撤回了一条成员消息", sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                                 end
                             end
                         end
@@ -6663,10 +6679,10 @@ local function processIncomingMessages(messages, animate)
                                 local targetShow = '<font color="rgb(255,80,80)">' .. tostring(targetName or "") .. "</font>"
                                 local text
                                 if reason == "spam" then
-                                    text = "由于" .. targetShow .. "刷屏，已被打入冷宫两分钟�?
+                                    text = "由于" .. targetShow .. "刷屏，已被打入冷宫两分钟！"
                                 else
                                     local durationText = formatMuteDuration(durationSeconds or (expireAt - os.time()))
-                                    text = "由于" .. targetShow .. "检测到违禁词，已赏三个大B兜并禁言" .. durationText .. "�?
+                                    text = "由于" .. targetShow .. "检测到违禁词，已赏三个大B兜并禁言" .. durationText .. "！"
                                 end
                                 addMessageToUI(text, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                             end
@@ -6853,7 +6869,7 @@ loadMessages = function(animate)
         end
         if animate == false then
             task.defer(function()
-                UI_Elements.messageArea.CanvasPosition = Vector2.new(0, math.max(0, UI_Elements.messageArea.AbsoluteCanvasSize.Y - UI_Elements.messageArea.AbsoluteSize.Y))
+                messageArea.CanvasPosition = Vector2.new(0, math.max(0, messageArea.AbsoluteCanvasSize.Y - messageArea.AbsoluteSize.Y))
             end)
         end
     elseif errMessage then
@@ -6913,12 +6929,12 @@ local function joinRoom()
         return
     end
     if not exists then
-        createNotification(gui, errMessage or "没有此房�?, true)
+        createNotification(gui, errMessage or "没有此房间", true)
         return
     end
     currentRoom = inputRoom
     sessionJoinTime = os.time()
-    UI_Elements.roomTitle.Text = "房间: " .. currentRoom
+    roomTitle.Text = "房间: " .. currentRoom
     if startMinimizedOnLoad then
         loginPanel.Visible = false
         chatPanel.Visible = true
@@ -6927,7 +6943,7 @@ local function joinRoom()
         if minimizeButton then
             minimizeButton.Visible = true
         end
-        createNotification(gui, "已加�? " .. currentRoom, false)
+        createNotification(gui, "已加入: " .. currentRoom, false)
         loadMessages(false)
         startPolling()
         return
@@ -6938,7 +6954,7 @@ local function joinRoom()
     chatPanel.Visible = true
     chatPanel.Position = UDim2.new(0.5, 0, 1.5, -30)
     tweenProperty(chatPanel, {Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.35, Enum.EasingStyle.Back)
-    createNotification(gui, "已加�? " .. currentRoom, false)
+    createNotification(gui, "已加入: " .. currentRoom, false)
     loadMessages(false)
     startPolling()
 end
@@ -6961,7 +6977,7 @@ function leaveRoom()
     messageCache = {}
     messageUiByKey = {}
     messageCount = 0
-    for _, child in ipairs(UI_Elements.messageArea:GetChildren()) do
+    for _, child in ipairs(messageArea:GetChildren()) do
         if child:IsA("Frame") and child.Name == "MessageContainer" then
             child:Destroy()
         end
@@ -7037,11 +7053,11 @@ function sendMessageAction()
         local baseTarget = normalizeDisplayNameForTarget(target) or target
         pendingSelfDms[baseTarget .. "|" .. msg] = os.time()
         local time = os.date("%H:%M")
-        addMessageToUI("私信�?" .. tostring(target) .. ": " .. msg, userName, time, true, true, nil, nil, false)
+        addMessageToUI("私信给 " .. tostring(target) .. ": " .. msg, userName, time, true, true, nil, nil, false)
         task.spawn(function()
             local ok, result = sendDirectMessage(baseTarget, msg, userName, API_KEY)
             if not ok then
-                createNotification(gui, tostring(result or "私信发送失�?), true)
+                createNotification(gui, tostring(result or "私信发送失败"), true)
                 return
             end
             dmTargetName = nil
@@ -7060,7 +7076,7 @@ function sendMessageAction()
         if c then
             selfBubbleColor = c
             selfBubbleStyle = c
-            applyBubbleStyleToFrame(UI_Elements.colorToggle, selfBubbleStyle)
+            applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
             saveChatColorConfig()
         end
     end
@@ -7095,8 +7111,8 @@ function sendMessageAction()
 end
 
 joinButton.MouseButton1Click:Connect(joinRoom)
-UI_Elements.leaveButton.MouseButton1Click:Connect(leaveRoom)
-UI_Elements.sendButton.MouseButton1Click:Connect(sendMessageAction)
+leaveButton.MouseButton1Click:Connect(leaveRoom)
+sendButton.MouseButton1Click:Connect(sendMessageAction)
 UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
     if gameProcessedEvent then
         return
@@ -7179,17 +7195,17 @@ function setupSmoothDrag(dragHandle, targetFrame)
     UserInputService.InputEnded:Connect(onInputEnded)
 end
 
-setupSmoothDrag(UI_Elements.headerBar, chatPanel)
+setupSmoothDrag(headerBar, chatPanel)
 setupSmoothDrag(loginContent, loginPanel)
 
 minimizeButton = Instance.new("TextButton")
 minimizeButton.Name = "MinimizeButton"
 minimizeButton.Size = UDim2.new(0, 40, 0, 40)
 minimizeButton.Position = UDim2.new(1, -42, 1, -42)
-minimizeButton.BackgroundColor3 = ChatConstants.softPurpleColor
+minimizeButton.BackgroundColor3 = softPurpleColor
 minimizeButton.BorderSizePixel = 0
 minimizeButton.Font = Enum.Font.SourceSans
-minimizeButton.Text = "🗨�?
+minimizeButton.Text = "🗨️"
 minimizeButton.TextSize = 20
 minimizeButton.AutoButtonColor = false
 minimizeButton.Visible = false
@@ -7200,7 +7216,7 @@ if startMinimizedOnLoad then
 end
 
 addUICorner(minimizeButton, UDim.new(1, 0))
-addUIGradient(minimizeButton, ChatConstants.softPurpleGradient, 68)
+addUIGradient(minimizeButton, softPurpleGradient, 68)
 animateStrokeGradient(addButtonStroke(minimizeButton, 180, 0.35), 18)
 
 unreadDot = Instance.new("Frame")
@@ -7317,7 +7333,7 @@ if startMinimizedOnLoad then
     end
 end
 
-UI_Elements.foldButton.MouseButton1Click:Connect(toggleMinimize)
+foldButton.MouseButton1Click:Connect(toggleMinimize)
 loginFoldButton.MouseButton1Click:Connect(toggleMinimize)
 
 minimizeButton.MouseButton1Click:Connect(function()
@@ -7365,50 +7381,50 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 toggleMinimize()
             end
         end
-        if emojiPanel.Visible or (UI_Panels.colorPanel and UI_Panels.colorPanel.Visible) or (remoteEmoji.panel and remoteEmoji.panel.Visible) or (UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible) or (UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible) or (UI_Panels.bubblePalettePanel and UI_Panels.bubblePalettePanel.Visible) or (UI_Panels.dynamicBubblePanel and UI_Panels.dynamicBubblePanel.Visible) or (UI_Panels.bubbleBorderPanel and UI_Panels.bubbleBorderPanel.Visible) or (UI_Panels.avatarBorderPanel and UI_Panels.avatarBorderPanel.Visible) or (UI_Panels.avatarBorderSolidPanel and UI_Panels.avatarBorderSolidPanel.Visible) or (UI_Panels.avatarBorderQuickPanel and UI_Panels.avatarBorderQuickPanel.Visible) then
-            local insideEmoji = isPointInFrame(emojiPanel, pos) or isPointInFrame(UI_Elements.emojiToggle, pos)
-            local insideColor = isPointInFrame(UI_Panels.colorPanel, pos) or isPointInFrame(UI_Elements.colorPickerContainer, pos)
+        if emojiPanel.Visible or colorPanel.Visible or remoteEmoji.panel.Visible or (customColorPanel and customColorPanel.Visible) or (fontColorPanel and fontColorPanel.Visible) or (bubblePalettePanel and bubblePalettePanel.Visible) or (dynamicBubblePanel and dynamicBubblePanel.Visible) or (bubbleBorderPanel and bubbleBorderPanel.Visible) or (avatarBorderPanel and avatarBorderPanel.Visible) or (avatarBorderSolidPanel and avatarBorderSolidPanel.Visible) or (avatarBorderQuickPanel and avatarBorderQuickPanel.Visible) then
+            local insideEmoji = isPointInFrame(emojiPanel, pos) or isPointInFrame(emojiToggle, pos)
+            local insideColor = isPointInFrame(colorPanel, pos) or isPointInFrame(colorPickerContainer, pos)
             local insideRemote = isPointInFrame(remoteEmoji.panel, pos) or isPointInFrame(remoteEmoji.button, pos)
-            local insideCustom = UI_Panels.customColorPanel and isPointInFrame(UI_Panels.customColorPanel, pos)
-            local insideFont = UI_Panels.fontColorPanel and isPointInFrame(UI_Panels.fontColorPanel, pos)
-            local insideBubblePalette = UI_Panels.bubblePalettePanel and isPointInFrame(UI_Panels.bubblePalettePanel, pos)
-            local insideDynamic = UI_Panels.dynamicBubblePanel and isPointInFrame(UI_Panels.dynamicBubblePanel, pos)
-            local insideBubbleBorder = UI_Panels.bubbleBorderPanel and isPointInFrame(UI_Panels.bubbleBorderPanel, pos)
-            local insideAvatarBorder = UI_Panels.avatarBorderPanel and isPointInFrame(UI_Panels.avatarBorderPanel, pos)
-            local insideAvatarSolid = UI_Panels.avatarBorderSolidPanel and isPointInFrame(UI_Panels.avatarBorderSolidPanel, pos)
-            local insideAvatarQuick = UI_Panels.avatarBorderQuickPanel and isPointInFrame(UI_Panels.avatarBorderQuickPanel, pos)
+            local insideCustom = customColorPanel and isPointInFrame(customColorPanel, pos)
+            local insideFont = fontColorPanel and isPointInFrame(fontColorPanel, pos)
+            local insideBubblePalette = bubblePalettePanel and isPointInFrame(bubblePalettePanel, pos)
+            local insideDynamic = dynamicBubblePanel and isPointInFrame(dynamicBubblePanel, pos)
+            local insideBubbleBorder = bubbleBorderPanel and isPointInFrame(bubbleBorderPanel, pos)
+            local insideAvatarBorder = avatarBorderPanel and isPointInFrame(avatarBorderPanel, pos)
+            local insideAvatarSolid = avatarBorderSolidPanel and isPointInFrame(avatarBorderSolidPanel, pos)
+            local insideAvatarQuick = avatarBorderQuickPanel and isPointInFrame(avatarBorderQuickPanel, pos)
             if emojiPanel.Visible and not insideEmoji then
                 emojiPanel.Visible = false
             end
-            if UI_Panels.colorPanel and UI_Panels.colorPanel.Visible and not insideColor then
-                UI_Panels.colorPanel.Visible = false
+            if colorPanel.Visible and not insideColor then
+                colorPanel.Visible = false
             end
-            if remoteEmoji.panel and remoteEmoji.panel.Visible and not insideRemote then
+            if remoteEmoji.panel.Visible and not insideRemote then
                 remoteEmoji.panel.Visible = false
             end
-            if UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible and not insideCustom then
-                UI_Panels.customColorPanel.Visible = false
+            if customColorPanel and customColorPanel.Visible and not insideCustom then
+                customColorPanel.Visible = false
             end
-            if UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible and not insideFont then
-                UI_Panels.fontColorPanel.Visible = false
+            if fontColorPanel and fontColorPanel.Visible and not insideFont then
+                fontColorPanel.Visible = false
             end
-            if UI_Panels.bubblePalettePanel and UI_Panels.bubblePalettePanel.Visible and not insideBubblePalette then
-                UI_Panels.bubblePalettePanel.Visible = false
+            if bubblePalettePanel and bubblePalettePanel.Visible and not insideBubblePalette then
+                bubblePalettePanel.Visible = false
             end
-            if UI_Panels.dynamicBubblePanel and UI_Panels.dynamicBubblePanel.Visible and not insideDynamic then
-                UI_Panels.dynamicBubblePanel.Visible = false
+            if dynamicBubblePanel and dynamicBubblePanel.Visible and not insideDynamic then
+                dynamicBubblePanel.Visible = false
             end
-            if UI_Panels.bubbleBorderPanel and UI_Panels.bubbleBorderPanel.Visible and not insideBubbleBorder then
-                UI_Panels.bubbleBorderPanel.Visible = false
+            if bubbleBorderPanel and bubbleBorderPanel.Visible and not insideBubbleBorder then
+                bubbleBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderPanel and UI_Panels.avatarBorderPanel.Visible and not insideAvatarBorder then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel and avatarBorderPanel.Visible and not insideAvatarBorder then
+                avatarBorderPanel.Visible = false
             end
-            if UI_Panels.avatarBorderSolidPanel and UI_Panels.avatarBorderSolidPanel.Visible and not insideAvatarSolid then
-                UI_Panels.avatarBorderSolidPanel.Visible = false
+            if avatarBorderSolidPanel and avatarBorderSolidPanel.Visible and not insideAvatarSolid then
+                avatarBorderSolidPanel.Visible = false
             end
-            if UI_Panels.avatarBorderQuickPanel and UI_Panels.avatarBorderQuickPanel.Visible and not insideAvatarQuick then
-                UI_Panels.avatarBorderQuickPanel.Visible = false
+            if avatarBorderQuickPanel and avatarBorderQuickPanel.Visible and not insideAvatarQuick then
+                avatarBorderQuickPanel.Visible = false
             end
         end
     end
@@ -7416,10 +7432,10 @@ end)
 
 task.spawn(function()
     while true do
-        if UI_Elements.statusIndicator and UI_Elements.statusIndicator.Parent then
-            tweenProperty(UI_Elements.statusIndicator, {BackgroundTransparency = 0.4}, 0.6)
+        if statusIndicator and statusIndicator.Parent then
+            tweenProperty(statusIndicator, {BackgroundTransparency = 0.4}, 0.6)
             task.wait(0.6)
-            tweenProperty(UI_Elements.statusIndicator, {BackgroundTransparency = 0}, 0.6)
+            tweenProperty(statusIndicator, {BackgroundTransparency = 0}, 0.6)
             task.wait(0.6)
         else
             break
