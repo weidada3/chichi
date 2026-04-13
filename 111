@@ -99,29 +99,29 @@ VIOLATION_WINDOW_SECONDS = 3600
 violationStateByName = {}
 
 FORBIDDEN_WORDS = {
-    "傻�?,
+    "傻逼",
     "傻b",
     "sb",
     "nmsl",
     "cnm",
-    "操你�?,
-	"煞笔",
-	"沙币",
-	"shabi",
-    "草泥�?,
-    "草你�?,
-    "你妈�?,
-    "你妈�?,
-    "妈�?,
+    "操你妈",
+    "煞笔",
+    "沙币",
+    "shabi",
+    "草泥马",
+    "草你妈",
+    "你妈的",
+    "你妈了",
+    "妈的",
     "妈b",
-    "日你�?,
+    "日你妈",
     "去死",
     "死妈",
-    "死全�?,
+    "死全家",
     "脑残",
     "废物",
     "垃圾",
-    "狗东�?,
+    "狗东西",
     "你妈死了",
     "fuck",
     "fuk",
@@ -181,15 +181,15 @@ end
 
 local function formatMuteDuration(seconds)
     if seconds >= 86400 then
-        return "一�?
+        return "一天"
     end
     if seconds >= 1800 then
         return "半个小时"
     end
     if seconds >= 600 then
-        return "十分�?
+        return "10分钟"
     end
-    return "五分�?
+    return "5分钟"
 end
 
 local function colorToString(c)
