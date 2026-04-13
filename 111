@@ -7,6 +7,43 @@ UserInputService = game:GetService("UserInputService")
 LocalPlayer = Players.LocalPlayer
 PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
+local addUIStroke
+local addStrokeGradient
+local animateStrokeGradient
+
+addUIStroke = function(parent, color, thickness, transparency)
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = color or Color3.fromRGB(255, 255, 255)
+    stroke.Thickness = thickness or 1
+    stroke.Transparency = transparency or 0.8
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Parent = parent
+    return stroke
+end
+
+addStrokeGradient = function(stroke, colorSequence, rotation)
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = colorSequence
+    gradient.Rotation = rotation or 0
+    gradient.Parent = stroke
+    return gradient
+end
+
+animateStrokeGradient = function(stroke, speed)
+    local gradient = stroke:FindFirstChildOfClass("UIGradient")
+    if not gradient then
+        return
+    end
+    speed = speed or 20
+    task.spawn(function()
+        while stroke and stroke.Parent do
+            local current = gradient.Rotation
+            gradient.Rotation = current + speed * 0.03
+            task.wait(0.03)
+        end
+    end)
+end
+
 API_KEY = "YOUR_API_KEY_HERE"
 BASE_URL = "http://kpl.wyp8.top/cs/k.php"
 FIXED_ROOM = "Foodie Base"
@@ -1079,16 +1116,6 @@ local function addUICorner(parent, radius)
     return corner
 end
 
-addUIStroke = function(parent, color, thickness, transparency)
-    local stroke = Instance.new("UIStroke")
-    stroke.Color = color or Color3.fromRGB(255, 255, 255)
-    stroke.Thickness = thickness or 1
-    stroke.Transparency = transparency or 0.8
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    stroke.Parent = parent
-    return stroke
-end
-
 local function addUIGradient(parent, colorSequence, rotation, transparency)
     local gradient = Instance.new("UIGradient")
     gradient.Color = colorSequence
@@ -1100,29 +1127,6 @@ local function addUIGradient(parent, colorSequence, rotation, transparency)
     end
     gradient.Parent = parent
     return gradient
-end
-
-addStrokeGradient = function(stroke, colorSequence, rotation)
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = colorSequence
-    gradient.Rotation = rotation or 0
-    gradient.Parent = stroke
-    return gradient
-end
-
-animateStrokeGradient = function(stroke, speed)
-    local gradient = stroke:FindFirstChildOfClass("UIGradient")
-    if not gradient then
-        return
-    end
-    speed = speed or 20
-    task.spawn(function()
-        while stroke.Parent do
-            local current = gradient.Rotation
-            gradient.Rotation = current + speed * 0.03
-            task.wait(0.03)
-        end
-    end)
 end
 
 local function addButtonStroke(button, rotation, transparency)
