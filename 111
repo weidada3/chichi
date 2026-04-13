@@ -105,14 +105,14 @@ FORBIDDEN_WORDS = {
     "nmsl",
     "cnm",
     "操你妈",
-    "煞笔",
-    "沙币",
-    "shabi",
+	"煞笔",
+	"沙币",
+	"shabi",
     "草泥马",
     "草你妈",
     "你妈的",
-    "你妈了",
-    "妈的",
+    "你妈逼",
+    "妈逼",
     "妈b",
     "日你妈",
     "去死",
@@ -187,9 +187,9 @@ local function formatMuteDuration(seconds)
         return "半个小时"
     end
     if seconds >= 600 then
-        return "10分钟"
+        return "十分钟"
     end
-    return "5分钟"
+    return "五分钟"
 end
 
 local function colorToString(c)
@@ -1490,7 +1490,7 @@ local function extractReplyTargetName(text)
     if type(text) ~= "string" then
         return nil
     end
-    local target = text:match("^回复%s+([^�?]+)[�?]")
+    local target = text:match("^回复%s+([^：:]+)[：:]")
     if not target then
         return nil
     end
@@ -1629,7 +1629,7 @@ local function addAdminRemote(targetName)
         })
     end)
     if not success or not response or not response.Success then
-        return false, "添加管理员失�?
+        return false, "添加管理员失败"
     end
     local ok, data = pcall(function()
         return HttpService:JSONDecode(response.Body)
@@ -1641,15 +1641,15 @@ local function addAdminRemote(targetName)
             return false, tostring(data[2])
         end
     end
-    return false, "添加管理员返回异�?
+    return false, "添加管理员返回异常"
 end
 
 local function removeAdminRemote(targetName)
     if not targetName or targetName == "" then
-        return false, "请选择要移除的管理�?
+        return false, "请选择要移除的管理员"
     end
     if isSuperAdminName(targetName) then
-        return false, "不能移除超级管理�?
+        return false, "不能移除超级管理员"
     end
     local url = string.format("%s?action=remove_admin&apikey=%s&name=%s",
         BASE_URL,
@@ -1663,7 +1663,7 @@ local function removeAdminRemote(targetName)
         })
     end)
     if not success or not response or not response.Success then
-        return false, "移除管理员失�?
+        return false, "移除管理员失败"
     end
     local ok, data = pcall(function()
         return HttpService:JSONDecode(response.Body)
@@ -1675,7 +1675,7 @@ local function removeAdminRemote(targetName)
             return false, tostring(data[2])
         end
     end
-    return false, "移除管理员返回异�?
+    return false, "移除管理员返回异常"
 end
 
 local function isAdminName(name)
@@ -1775,14 +1775,14 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                     if target and target ~= "" then
                         dmTargetName = target
                         if messageInput then
-                            messageInput.PlaceholderText = "私信�?" .. tostring(target) .. "..."
+                            messageInput.PlaceholderText = "私信给 " .. tostring(target) .. "..."
                             messageInput:CaptureFocus()
                         end
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "已进入私信模�?, false)
+                        createNotification(notifyParent, "已进入私信模式", false)
                     else
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "无法私信该用�?, true)
+                        createNotification(notifyParent, "无法私信该用户", true)
                     end
                     return
                 end
@@ -1811,10 +1811,10 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                 end
                 messageInput:CaptureFocus()
                 local notifyParent = rootGui or parent
-                createNotification(notifyParent, "已填�?" .. atText, false)
+                createNotification(notifyParent, "已填入 " .. atText, false)
             else
                 local notifyParent = rootGui or parent
-                createNotification(notifyParent, "无法获取对方名称，暂时不�?@", true)
+                createNotification(notifyParent, "无法获取对方名称，暂时不能 @", true)
             end
         end)
     end
@@ -2008,14 +2008,14 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                                     local replyPrefix = "回复 " .. replyName .. ": " .. preview .. "\n"
                                     messageInput.Text = replyPrefix .. current
                                     messageInput:CaptureFocus()
-                                    createNotification(notifyParent, "已引用消�?, false)
+                                    createNotification(notifyParent, "已引用消息", false)
                                 end
                             else
                                 if setclipboard then
                                     pcall(setclipboard, message)
-                                    createNotification(notifyParent, "已复制消�?, false)
+                                    createNotification(notifyParent, "已复制消息", false)
                                 else
-                                    createNotification(notifyParent, "当前环境不支持复�?, true)
+                                    createNotification(notifyParent, "当前环境不支持复制", true)
                                 end
                             end
                         end
@@ -2177,7 +2177,7 @@ local function createMessageBubble(parent, message, name, time, isSelf, layoutOr
                         pcall(setclipboard, toCopy)
                     else
                         local notifyParent = rootGui or parent
-                        createNotification(notifyParent, "当前环境不支持复�?, true)
+                        createNotification(notifyParent, "当前环境不支持复制", true)
                     end
                     task.spawn(function()
                         local tweenUp = TweenService:Create(copyScale, TweenInfo.new(0.08, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1.25})
@@ -2394,7 +2394,7 @@ local function sendMessage(room, message, name, apiKey, colorString)
     end)
     
     if parseSuccess and type(data) == "table" and data[1] == "success" then
-        return true, data[2] or "发送成�?
+        return true, data[2] or "发送成功"
     end
     
     return false, response.Body or "未知错误"
@@ -2459,7 +2459,7 @@ local function sendDirectMessage(target, message, fromName, apiKey)
         return HttpService:JSONDecode(response.Body)
     end)
     if parseSuccess and type(data) == "table" and data[1] == "success" then
-        return true, data[2] or "发送成�?
+        return true, data[2] or "发送成功"
     end
     if parseSuccess and type(data) == "table" and data[1] == "error" and data[2] then
         return false, tostring(data[2])
@@ -2551,7 +2551,7 @@ local function setAnnouncementRemote(text)
     end)
     if ok and type(data) == "table" then
         if data[1] == "success" then
-            return true, data[2] or "公告已更�?
+            return true, data[2] or "公告已更新"
         elseif data[1] == "error" and data[2] then
             return false, tostring(data[2])
         end
@@ -2591,7 +2591,7 @@ end
 
 local function deleteRoomRemote(roomName)
     if not roomName or roomName == "" then
-        return false, "房间名不能为�?
+        return false, "房间名不能为空"
     end
     if roomName == FIXED_ROOM then
         return false, "默认房间不能删除"
@@ -2807,7 +2807,7 @@ do
     subtitleLabel.Position = UDim2.new(0, 0, 0, 102)
     subtitleLabel.BackgroundTransparency = 1
     subtitleLabel.Font = Enum.Font.Gotham
-    subtitleLabel.Text = "浮华万千，藏尽人间声�?
+    subtitleLabel.Text = "浮华万千，藏尽人间声色"
     subtitleLabel.TextColor3 = textMuted
     subtitleLabel.TextSize = 11
     subtitleLabel.ZIndex = 11
@@ -2820,7 +2820,7 @@ do
     loginFoldButton.BackgroundColor3 = backgroundTertiary
     loginFoldButton.BorderSizePixel = 0
     loginFoldButton.Font = Enum.Font.GothamBold
-    loginFoldButton.Text = "�?
+    loginFoldButton.Text = "—"
     loginFoldButton.TextColor3 = textColor
     loginFoldButton.TextSize = 14
     loginFoldButton.AutoButtonColor = false
@@ -2840,7 +2840,7 @@ do
     end)
 
     local roomContainer
-    roomContainer, roomInput = createTextBox(loginContent, "房间�?, UDim2.new(0.85, 0, 0, 32), UDim2.new(0.5, 0, 0, 135))
+    roomContainer, roomInput = createTextBox(loginContent, "房间号", UDim2.new(0.85, 0, 0, 32), UDim2.new(0.5, 0, 0, 135))
     roomContainer.ZIndex = 11
     roomInput.ZIndex = 12
     roomInput.ClearTextOnFocus = true
@@ -2932,7 +2932,7 @@ local function sendMuteCommand(targetName, seconds, reason, meta)
         return false
     end
     if isCreatorAdminName(targetName) and not isCreatorAdminName(userName) then
-        createNotification(gui, "不能禁言创世管理�?, true)
+        createNotification(gui, "不能禁言创世管理员", true)
         return false
     end
     if seconds > 0 and isAdminName(userName) and isAdminName(targetName) and (not isCreatorAdminName(userName)) then
@@ -2947,7 +2947,7 @@ local function sendMuteCommand(targetName, seconds, reason, meta)
         end
     end
     if isSuperAdminName(targetName) and (not isSuperAdminName(userName)) and (not isCreatorAdminName(userName)) then
-        createNotification(gui, "不能禁言超级管理�?, true)
+        createNotification(gui, "不能禁言超级管理员", true)
         return false
     end
     local expireAt = os.time() + math.max(seconds, 0)
@@ -3097,7 +3097,7 @@ local function openMuteList()
             timeLabel.Position = UDim2.new(0.4, 0, 0, 0)
             timeLabel.BackgroundTransparency = 1
             timeLabel.Font = Enum.Font.Gotham
-            timeLabel.Text = tostring(minutes) .. "�? .. tostring(seconds) .. "�?
+            timeLabel.Text = tostring(minutes) .. "分" .. tostring(seconds) .. "秒"
             timeLabel.TextColor3 = textMuted
             timeLabel.TextSize = 10
             timeLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -3294,7 +3294,7 @@ openMuteMenu = function(targetName)
         muteCustomInput.BackgroundColor3 = backgroundSecondary
         muteCustomInput.BorderSizePixel = 0
         muteCustomInput.Font = Enum.Font.Gotham
-        muteCustomInput.PlaceholderText = "自定义分�?
+        muteCustomInput.PlaceholderText = "自定义分钟"
         muteCustomInput.PlaceholderColor3 = textMuted
         muteCustomInput.Text = ""
         muteCustomInput.TextColor3 = textColor
@@ -3415,11 +3415,11 @@ openMuteMenu = function(targetName)
                         end
                     end
                     messageInput:CaptureFocus()
-                    createNotification(gui, "已填�?" .. atText, false)
+                    createNotification(gui, "已填入 " .. atText, false)
                     muteMenu.Visible = false
                 end
             else
-                createNotification(gui, "当前无法 @ 该用�?, true)
+                createNotification(gui, "当前无法 @ 该用户", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
@@ -3428,14 +3428,14 @@ openMuteMenu = function(targetName)
 
         dmBtn.MouseButton1Click:Connect(function()
             if not muteTargetName or muteTargetName == "" then
-                createNotification(gui, "当前无法私信该用�?, true)
+                createNotification(gui, "当前无法私信该用户", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
                 return
             end
             if not isAdminName(userName) then
-                createNotification(gui, "只有管理员可以私�?, true)
+                createNotification(gui, "只有管理员可以私信", true)
                 if muteMenu then
                     muteMenu.Visible = false
                 end
@@ -3443,10 +3443,10 @@ openMuteMenu = function(targetName)
             end
             dmTargetName = muteTargetName
             if messageInput then
-                messageInput.PlaceholderText = "私信�?" .. tostring(muteTargetName) .. "..."
+                messageInput.PlaceholderText = "私信给 " .. tostring(muteTargetName) .. "..."
                 messageInput:CaptureFocus()
             end
-            createNotification(gui, "已进入私信模�?, false)
+            createNotification(gui, "已进入私信模式", false)
             muteMenu.Visible = false
         end)
 
@@ -3533,7 +3533,7 @@ local function refreshAdminList()
         emptyLabel.Position = UDim2.new(0, 8, 0, 40)
         emptyLabel.BackgroundTransparency = 1
         emptyLabel.Font = Enum.Font.Gotham
-        emptyLabel.Text = "暂无管理员数�?
+        emptyLabel.Text = "暂无管理员数据"
         emptyLabel.TextColor3 = textMuted
         emptyLabel.TextSize = 12
         emptyLabel.ZIndex = 52
@@ -3570,7 +3570,7 @@ openAdminPanel = function()
         title.TextColor3 = textColor
         title.TextSize = 12
         title.TextXAlignment = Enum.TextXAlignment.Left
-        title.Text = "管理员管�?
+        title.Text = "管理员管理"
         title.ZIndex = 51
         title.Parent = adminPanel
 
@@ -3629,7 +3629,7 @@ openAdminPanel = function()
             task.spawn(function()
                 local ok, msg = setAnnouncementRemote(text)
                 if ok then
-                    createNotification(gui, msg or "公告已更�?, false)
+                    createNotification(gui, msg or "公告已更新", false)
                 else
                     createNotification(gui, msg or "公告更新失败", true)
                 end
@@ -3694,7 +3694,7 @@ statusLabel.Size = UDim2.new(0, 60, 0, 12)
 statusLabel.Position = UDim2.new(0, 20, 0, 4)
 statusLabel.BackgroundTransparency = 1
 statusLabel.Font = Enum.Font.Gotham
-statusLabel.Text = "已连�?
+statusLabel.Text = "已连接"
 statusLabel.TextColor3 = textMuted
 statusLabel.TextSize = 10
 statusLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -3751,7 +3751,7 @@ applyAnnouncement = function(text)
         str = str:gsub(">", "&gt;")
         return str
     end
-    local displayText = '<font color="rgb(255,0,0)">公告�?/font>' .. escapeRichText(currentAnnouncement)
+    local displayText = '<font color="rgb(255,0,0)">公告：</font>' .. escapeRichText(currentAnnouncement)
     announcementLabel.Text = displayText
     task.spawn(function()
         task.wait(0.1)
@@ -3825,7 +3825,7 @@ foldButton.BackgroundColor3 = softPurpleColor
 foldButton.BackgroundTransparency = 0.35
 foldButton.BorderSizePixel = 0
 foldButton.Font = Enum.Font.GothamBold
-foldButton.Text = "�?
+foldButton.Text = "—"
 foldButton.TextColor3 = textColor
 foldButton.TextSize = 14
 foldButton.AutoButtonColor = false
@@ -3955,7 +3955,7 @@ scrollToBottomButton.BackgroundColor3 = softPurpleColor
 scrollToBottomButton.BackgroundTransparency = 0.35
 scrollToBottomButton.BorderSizePixel = 0
 scrollToBottomButton.Font = Enum.Font.GothamBold
-scrollToBottomButton.Text = "�?
+scrollToBottomButton.Text = "↓"
 scrollToBottomButton.TextColor3 = textColor
 scrollToBottomButton.TextSize = 18
 scrollToBottomButton.AutoButtonColor = false
@@ -4125,7 +4125,7 @@ sendButton.BackgroundColor3 = softOrangeColor
 sendButton.BackgroundTransparency = 0.35
 sendButton.BorderSizePixel = 0
 sendButton.Font = Enum.Font.GothamBold
-sendButton.Text = "�?
+sendButton.Text = "↑"
 sendButton.TextColor3 = textColor
 sendButton.TextSize = 18
 sendButton.AutoButtonColor = false
@@ -4380,7 +4380,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
             remoteEmoji.autoPopupToggle.Text = "开"
         else
             remoteEmoji.autoPopupToggle.BackgroundColor3 = backgroundSecondary
-            remoteEmoji.autoPopupToggle.Text = "�?
+            remoteEmoji.autoPopupToggle.Text = "关"
         end
     end
 
@@ -4409,7 +4409,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
         saveChatSettings()
         updateAutoPopupToggleVisual()
         if autoPopupEnabled then
-            createNotification(gui, "已保存，下次加载UI不弹�?, false)
+            createNotification(gui, "已保存，下次加载UI不弹出", false)
         else
             createNotification(gui, "已保存，下次加载聊天UI弹出", false)
         end
@@ -4417,7 +4417,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
 
     remoteEmoji.restoreBgButton.MouseButton1Click:Connect(function()
         ThirdGenChat_ClearBackground()
-        createNotification(gui, "已恢复默认背�?, false)
+        createNotification(gui, "已恢复默认背景", false)
     end)
 
     remoteEmoji.scroll = Instance.new("ScrollingFrame")
@@ -4608,7 +4608,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
                         remoteEmoji.panel.Visible = false
                         if isBackground then
                             ThirdGenChat_SetBackgroundRemote(fileUrl, fileName)
-                            createNotification(gui, "已设置聊天背�?, false)
+                            createNotification(gui, "已设置聊天背景", false)
                         else
                             if not messageInput then
                                 return
@@ -4664,7 +4664,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
                             img.MouseButton1Click:Connect(function()
                                 remoteEmoji.panel.Visible = false
                                 ThirdGenChat_SetBackgroundLocal(p)
-                                    createNotification(gui, "已设置聊天背�?, false)
+                                    createNotification(gui, "已设置聊天背景", false)
                                 end)
                         end
                     end
@@ -4690,7 +4690,7 @@ function createRemoteEmojiUI(chatContent, headerBar, messageInput, hideConflicts
     remoteEmoji.button.BackgroundTransparency = 0.35
     remoteEmoji.button.BorderSizePixel = 0
     remoteEmoji.button.Font = Enum.Font.GothamBold
-    remoteEmoji.button.Text = "�?
+    remoteEmoji.button.Text = "图"
     remoteEmoji.button.TextColor3 = textColor
     remoteEmoji.button.TextSize = 14
     remoteEmoji.button.AutoButtonColor = false
@@ -4761,23 +4761,10 @@ do
 end
 
 local UI_Panels = {}
-_G.ThirdGenChat_UI = UI_Panels
 local isAdminUser = isAdminName(userName)
 local regularBubbleRemovedColor = Color3.fromRGB(140, 200, 255)
 local regularBubbleCoffeeColor = Color3.fromRGB(160, 120, 80)
 local randomColorPool = {}
-
--- 将这些变量定义为 UI_Panels 的成员以节省局部寄存器
-UI_Panels.customColorPanel = nil
-UI_Panels.customColorArea = nil
-UI_Panels.fontColorPanel = nil
-UI_Panels.bubblePalettePanel = nil
-UI_Panels.bubbleBorderPanel = nil
-UI_Panels.avatarBorderPanel = nil
-UI_Panels.avatarBorderQuickPanel = nil
-UI_Panels.avatarBorderSolidPanel = nil
-UI_Panels.dynamicBubblePanel = nil
-UI_Panels.colorPanel = nil
 
 remoteEmoji = createRemoteEmojiUI(chatContent, headerBar, messageInput, function()
     emojiPanel.Visible = false
@@ -4812,7 +4799,7 @@ end)
 
 do
     UI_Panels.avatarBorderQuickPanel = Instance.new("Frame")
-    UI_Panels.avatarBorderQuickPanel.Name = "UI_Panels.avatarBorderQuickPanel"
+    UI_Panels.avatarBorderQuickPanel.Name = "AvatarBorderQuickPanel"
     UI_Panels.avatarBorderQuickPanel.Size = UDim2.new(0, 180, 0, 96)
     UI_Panels.avatarBorderQuickPanel.AnchorPoint = Vector2.new(0, 1)
     UI_Panels.avatarBorderQuickPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
@@ -4920,7 +4907,7 @@ do
     end
 
     UI_Panels.colorPanel = Instance.new("Frame")
-    UI_Panels.colorPanel.Name = "UI_Panels.colorPanel"
+    UI_Panels.colorPanel.Name = "ColorPanel"
     UI_Panels.colorPanel.Size = UDim2.new(0, 240, 0, isAdminUser and 86 or 58)
     UI_Panels.colorPanel.Position = isAdminUser and UDim2.new(0, 8, 1, -140) or UDim2.new(0, 8, 1, -108)
     UI_Panels.colorPanel.BackgroundColor3 = backgroundTertiary
@@ -5100,7 +5087,7 @@ do
         customBubbleButton.BackgroundColor3 = backgroundSecondary
         customBubbleButton.BorderSizePixel = 0
         customBubbleButton.Font = Enum.Font.GothamBold
-        customBubbleButton.Text = "自定义气�?
+        customBubbleButton.Text = "自定义气泡"
         customBubbleButton.TextColor3 = textColor
         customBubbleButton.TextSize = 11
         customBubbleButton.AutoButtonColor = false
@@ -5211,7 +5198,7 @@ do
         customOpenButton.BackgroundColor3 = backgroundSecondary
         customOpenButton.BorderSizePixel = 0
         customOpenButton.Font = Enum.Font.GothamBold
-        customOpenButton.Text = "自定义气泡颜�?
+        customOpenButton.Text = "自定义气泡颜色"
         customOpenButton.TextColor3 = textColor
         customOpenButton.TextSize = 11
         customOpenButton.AutoButtonColor = false
@@ -5387,7 +5374,7 @@ do
         avatarBorderSolidButton.BackgroundColor3 = backgroundSecondary
         avatarBorderSolidButton.BorderSizePixel = 0
         avatarBorderSolidButton.Font = Enum.Font.GothamBold
-        avatarBorderSolidButton.Text = "普通边�?
+        avatarBorderSolidButton.Text = "普通边框"
         avatarBorderSolidButton.TextColor3 = textColor
         avatarBorderSolidButton.TextSize = 11
         avatarBorderSolidButton.AutoButtonColor = false
@@ -5430,7 +5417,7 @@ do
         dynamicBubbleButton.BackgroundColor3 = backgroundSecondary
         dynamicBubbleButton.BorderSizePixel = 0
         dynamicBubbleButton.Font = Enum.Font.GothamBold
-        dynamicBubbleButton.Text = "动态气�?
+        dynamicBubbleButton.Text = "动态气泡"
         dynamicBubbleButton.TextColor3 = textColor
         dynamicBubbleButton.TextSize = 11
         dynamicBubbleButton.AutoButtonColor = false
@@ -5536,7 +5523,7 @@ end
 
 local function createBubblePalettePanel()
     local panel = Instance.new("Frame")
-    panel.Name = "UI_Panels.bubblePalettePanel"
+    panel.Name = "BubblePalettePanel"
     panel.Size = UDim2.new(0, 180, 0, 120)
     panel.Position = UDim2.new(0, 8, 1, -255)
     panel.BackgroundColor3 = backgroundTertiary
@@ -5648,7 +5635,7 @@ end
 
 local function createDynamicBubblePanel()
     local panel = Instance.new("Frame")
-    panel.Name = "UI_Panels.dynamicBubblePanel"
+    panel.Name = "DynamicBubblePanel"
     panel.Size = UDim2.new(0, 180, 0, 200)
     panel.Position = UDim2.new(0, 8, 1, -335)
     panel.BackgroundColor3 = backgroundTertiary
@@ -5667,7 +5654,7 @@ local function createDynamicBubblePanel()
     title.Position = UDim2.new(0, 10, 0, 6)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.Text = "动态气�?
+    title.Text = "动态气泡"
     title.TextColor3 = textColor
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -5745,7 +5732,7 @@ end
 
 local function createBubbleBorderPanel()
     local panel = Instance.new("Frame")
-    panel.Name = "UI_Panels.bubbleBorderPanel"
+    panel.Name = "BubbleBorderPanel"
     panel.Size = UDim2.new(0, 180, 0, 120)
     panel.Position = UDim2.new(0, 8, 1, -255)
     panel.BackgroundColor3 = backgroundTertiary
@@ -5839,7 +5826,7 @@ end
 
 local function createAvatarSolidBorderPanel()
     local panel = Instance.new("Frame")
-    panel.Name = "UI_Panels.avatarBorderSolidPanel"
+    panel.Name = "AvatarBorderSolidPanel"
     panel.Size = UDim2.new(0, 180, 0, 140)
     panel.Position = UDim2.new(0, 152, 1, -255)--整体u
     panel.BackgroundColor3 = backgroundTertiary
@@ -5858,7 +5845,7 @@ local function createAvatarSolidBorderPanel()
     title.Position = UDim2.new(0, 10, 0, 6)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.Text = "普通边�?
+    title.Text = "普通边框"
     title.TextColor3 = textColor
     title.TextSize = 12
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -5918,8 +5905,8 @@ local function createAvatarSolidBorderPanel()
             end
             saveChatColorConfig()
             panel.Visible = false
-            if UI_Panels.avatarBorderPanel then
-                UI_Panels.avatarBorderPanel.Visible = false
+            if avatarBorderPanel then
+                avatarBorderPanel.Visible = false
             end
         end)
     end
@@ -5929,7 +5916,7 @@ end
 
 local function createAvatarBorderPanel()
     local panel = Instance.new("Frame")
-    panel.Name = "UI_Panels.avatarBorderPanel"
+    panel.Name = "AvatarBorderPanel"
     panel.Size = UDim2.new(0, 180, 0, 140)
     panel.Position = UDim2.new(0, 8, 1, -285)
     panel.BackgroundColor3 = backgroundTertiary
@@ -5962,7 +5949,7 @@ local function createAvatarBorderPanel()
     normalBtn.BackgroundColor3 = backgroundSecondary
     normalBtn.BorderSizePixel = 0
     normalBtn.Font = Enum.Font.GothamBold
-    normalBtn.Text = "普通边�?
+    normalBtn.Text = "普通边框"
     normalBtn.TextColor3 = textColor
     normalBtn.TextSize = 11
     normalBtn.AutoButtonColor = false
@@ -5972,8 +5959,8 @@ local function createAvatarBorderPanel()
     addButtonStroke(normalBtn, 180, 0.35)
     normalBtn.MouseButton1Click:Connect(function()
         panel.Visible = false
-        if UI_Panels.avatarBorderSolidPanel then
-            UI_Panels.avatarBorderSolidPanel.Visible = not UI_Panels.avatarBorderSolidPanel.Visible
+        if avatarBorderSolidPanel then
+            avatarBorderSolidPanel.Visible = not avatarBorderSolidPanel.Visible
         end
     end)
 
@@ -6041,20 +6028,20 @@ local function createAvatarBorderPanel()
 end
 
 do
-    UI_Panels.customColorPanel = Instance.new("Frame")
-    UI_Panels.customColorPanel.Name = "UI_Panels.customColorPanel"
-    UI_Panels.customColorPanel.Size = UDim2.new(0, 180, 0, 120)
-    UI_Panels.customColorPanel.Position = UDim2.new(0, 8, 1, -210)
-    UI_Panels.customColorPanel.BackgroundColor3 = backgroundTertiary
-    UI_Panels.customColorPanel.BorderSizePixel = 0
-    UI_Panels.customColorPanel.Visible = false
-    UI_Panels.customColorPanel.ZIndex = 21
-    UI_Panels.customColorPanel.Parent = chatContent
+    customColorPanel = Instance.new("Frame")
+    customColorPanel.Name = "CustomColorPanel"
+    customColorPanel.Size = UDim2.new(0, 180, 0, 120)
+    customColorPanel.Position = UDim2.new(0, 8, 1, -210)
+    customColorPanel.BackgroundColor3 = backgroundTertiary
+    customColorPanel.BorderSizePixel = 0
+    customColorPanel.Visible = false
+    customColorPanel.ZIndex = 21
+    customColorPanel.Parent = chatContent
 
-    addUICorner(UI_Panels.customColorPanel, UDim.new(0, 10))
-    local customStroke = addUIStroke(UI_Panels.customColorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
+    addUICorner(customColorPanel, UDim.new(0, 10))
+    local customStroke = addUIStroke(customColorPanel, Color3.fromRGB(255, 255, 255), 1.1, 0.55)
     addStrokeGradient(customStroke, strokeGradient, 180)
-    addUIGradient(UI_Panels.customColorPanel, backgroundGradient, 68)
+    addUIGradient(customColorPanel, backgroundGradient, 68)
 
     local colorArea = Instance.new("Frame")
     colorArea.Name = "ColorArea"
@@ -6064,9 +6051,9 @@ do
     colorArea.BorderSizePixel = 0
     colorArea.ClipsDescendants = true
     colorArea.ZIndex = 22
-    colorArea.Parent = UI_Panels.customColorPanel
+    colorArea.Parent = customColorPanel
     addUICorner(colorArea, UDim.new(0, 8))
-    UI_Panels.customColorArea = colorArea
+    customColorArea = colorArea
 
     local hueGradient = Instance.new("UIGradient")
     hueGradient.Color = ColorSequence.new({
@@ -6142,7 +6129,7 @@ do
     stripesContainer.BackgroundTransparency = 1
     stripesContainer.BorderSizePixel = 0
     stripesContainer.ZIndex = 22
-    stripesContainer.Parent = UI_Panels.customColorPanel
+    stripesContainer.Parent = customColorPanel
 
     local stripesLayout = Instance.new("UIListLayout")
     stripesLayout.FillDirection = Enum.FillDirection.Vertical
@@ -6192,7 +6179,7 @@ do
                 selfBubbleStyle = c
                 applyBubbleStyleToFrame(colorToggle, selfBubbleStyle)
                 saveChatColorConfig()
-                UI_Panels.customColorPanel.Visible = false
+                customColorPanel.Visible = false
             end
         end)
     end
@@ -6209,7 +6196,7 @@ end
 
 do
     UI_Panels.fontColorPanel = Instance.new("Frame")
-    UI_Panels.fontColorPanel.Name = "UI_Panels.fontColorPanel"
+    UI_Panels.fontColorPanel.Name = "FontColorPanel"
     UI_Panels.fontColorPanel.Size = UDim2.new(0, 180, 0, isAdminUser and 150 or 96)
     UI_Panels.fontColorPanel.Position = UDim2.new(0, 8, 1, isAdminUser and -265 or -200)
     UI_Panels.fontColorPanel.BackgroundColor3 = backgroundTertiary
@@ -6473,7 +6460,7 @@ emojiGrid.CellSize = UDim2.new(0, 30, 0, 30)
 emojiGrid.CellPadding = UDim2.new(0, 4, 0, 4)
 emojiGrid.Parent = emojiScroll
 
-local emojis = {"🤪","🥴", "🤭", "😀", "😂", "😍", "🥺", "😎", "🤔", "👍", "👎", "❤️", "🔥", "�?, "🎉", "💯", "😮", "🤯", "😱", "🥶", "🥵", "🤮", "🤢", "🙏", "😊", "😢", "😡", "🤣", "😘", "🥰","😈", "👹", "👺", "🤡", "💀", "☠️", "👻", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"}
+local emojis = {"🤪","🥴", "🤭", "😀", "😂", "😍", "🥺", "😎", "🤔", "👍", "👎", "❤️", "🔥", "✨", "🎉", "💯", "😮", "🤯", "😱", "🥶", "🥵", "🤮", "🤢", "🙏", "😊", "😢", "😡", "🤣", "😘", "🥰","😈", "👹", "👺", "🤡", "💀", "☠️", "👻", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾"}
 
 for _, emoji in ipairs(emojis) do
     local emojiButton = Instance.new("TextButton")
@@ -6664,9 +6651,9 @@ local function processIncomingMessages(messages, animate)
                                 local displayTime = msg.time or os.date("%H:%M")
                                 if msg.name == userName then
                                     local greenTarget = '<font color="rgb(80,255,120)">' .. tostring(targetName or "") .. "</font>"
-                                    addMessageToUI("你撤回了成员" .. greenTarget .. "的一条消�?, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
+                                    addMessageToUI("你撤回了成员" .. greenTarget .. "的一条消息", sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                                 else
-                                    addMessageToUI("管理员撤回了一条成员消�?, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
+                                    addMessageToUI("管理员撤回了一条成员消息", sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                                 end
                             end
                         end
@@ -6709,10 +6696,10 @@ local function processIncomingMessages(messages, animate)
                                 local targetShow = '<font color="rgb(255,80,80)">' .. tostring(targetName or "") .. "</font>"
                                 local text
                                 if reason == "spam" then
-                                    text = "由于" .. targetShow .. "刷屏，已被打入冷宫两分钟�?
+                                    text = "由于" .. targetShow .. "刷屏，已被打入冷宫两分钟！"
                                 else
                                     local durationText = formatMuteDuration(durationSeconds or (expireAt - os.time()))
-                                    text = "由于" .. targetShow .. "检测到违禁词，已赏三个大B兜并禁言" .. durationText .. "�?
+                                    text = "由于" .. targetShow .. "检测到违禁词，已赏三个大B兜并禁言" .. durationText .. "！"
                                 end
                                 addMessageToUI(text, sysName, displayTime, false, true, SYSTEM_BUBBLE_COLOR, nil, false)
                             end
@@ -6959,7 +6946,7 @@ local function joinRoom()
         return
     end
     if not exists then
-        createNotification(gui, errMessage or "没有此房�?, true)
+        createNotification(gui, errMessage or "没有此房间", true)
         return
     end
     currentRoom = inputRoom
@@ -6973,7 +6960,7 @@ local function joinRoom()
         if minimizeButton then
             minimizeButton.Visible = true
         end
-        createNotification(gui, "已加�? " .. currentRoom, false)
+        createNotification(gui, "已加入: " .. currentRoom, false)
         loadMessages(false)
         startPolling()
         return
@@ -6984,7 +6971,7 @@ local function joinRoom()
     chatPanel.Visible = true
     chatPanel.Position = UDim2.new(0.5, 0, 1.5, -30)
     tweenProperty(chatPanel, {Position = UDim2.new(0.5, 0, 0.5, 0)}, 0.35, Enum.EasingStyle.Back)
-    createNotification(gui, "已加�? " .. currentRoom, false)
+    createNotification(gui, "已加入: " .. currentRoom, false)
     loadMessages(false)
     startPolling()
 end
@@ -7083,11 +7070,11 @@ function sendMessageAction()
         local baseTarget = normalizeDisplayNameForTarget(target) or target
         pendingSelfDms[baseTarget .. "|" .. msg] = os.time()
         local time = os.date("%H:%M")
-        addMessageToUI("私信�?" .. tostring(target) .. ": " .. msg, userName, time, true, true, nil, nil, false)
+        addMessageToUI("私信给 " .. tostring(target) .. ": " .. msg, userName, time, true, true, nil, nil, false)
         task.spawn(function()
             local ok, result = sendDirectMessage(baseTarget, msg, userName, API_KEY)
             if not ok then
-                createNotification(gui, tostring(result or "私信发送失�?), true)
+                createNotification(gui, tostring(result or "私信发送失败"), true)
                 return
             end
             dmTargetName = nil
@@ -7235,7 +7222,7 @@ minimizeButton.Position = UDim2.new(1, -42, 1, -42)
 minimizeButton.BackgroundColor3 = softPurpleColor
 minimizeButton.BorderSizePixel = 0
 minimizeButton.Font = Enum.Font.SourceSans
-minimizeButton.Text = "🗨�?
+minimizeButton.Text = "🗨️"
 minimizeButton.TextSize = 20
 minimizeButton.AutoButtonColor = false
 minimizeButton.Visible = false
@@ -7411,7 +7398,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 toggleMinimize()
             end
         end
-        if emojiPanel.Visible or UI_Panels.colorPanel.Visible or remoteEmoji.panel.Visible or (UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible) or (UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible) or (UI_Panels.bubblePalettePanel and UI_Panels.bubblePalettePanel.Visible) or (UI_Panels.dynamicBubblePanel and UI_Panels.dynamicBubblePanel.Visible) or (UI_Panels.bubbleBorderPanel and UI_Panels.bubbleBorderPanel.Visible) or (UI_Panels.avatarBorderPanel and UI_Panels.avatarBorderPanel.Visible) or (UI_Panels.avatarBorderSolidPanel and UI_Panels.avatarBorderSolidPanel.Visible) or (UI_Panels.avatarBorderQuickPanel and UI_Panels.avatarBorderQuickPanel.Visible) then
+        if emojiPanel.Visible or (UI_Panels.colorPanel and UI_Panels.colorPanel.Visible) or (remoteEmoji.panel and remoteEmoji.panel.Visible) or (UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible) or (UI_Panels.fontColorPanel and UI_Panels.fontColorPanel.Visible) or (UI_Panels.bubblePalettePanel and UI_Panels.bubblePalettePanel.Visible) or (UI_Panels.dynamicBubblePanel and UI_Panels.dynamicBubblePanel.Visible) or (UI_Panels.bubbleBorderPanel and UI_Panels.bubbleBorderPanel.Visible) or (UI_Panels.avatarBorderPanel and UI_Panels.avatarBorderPanel.Visible) or (UI_Panels.avatarBorderSolidPanel and UI_Panels.avatarBorderSolidPanel.Visible) or (UI_Panels.avatarBorderQuickPanel and UI_Panels.avatarBorderQuickPanel.Visible) then
             local insideEmoji = isPointInFrame(emojiPanel, pos) or isPointInFrame(emojiToggle, pos)
             local insideColor = isPointInFrame(UI_Panels.colorPanel, pos) or isPointInFrame(colorPickerContainer, pos)
             local insideRemote = isPointInFrame(remoteEmoji.panel, pos) or isPointInFrame(remoteEmoji.button, pos)
@@ -7426,10 +7413,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
             if emojiPanel.Visible and not insideEmoji then
                 emojiPanel.Visible = false
             end
-            if UI_Panels.colorPanel.Visible and not insideColor then
+            if UI_Panels.colorPanel and UI_Panels.colorPanel.Visible and not insideColor then
                 UI_Panels.colorPanel.Visible = false
             end
-            if remoteEmoji.panel.Visible and not insideRemote then
+            if remoteEmoji.panel and remoteEmoji.panel.Visible and not insideRemote then
                 remoteEmoji.panel.Visible = false
             end
             if UI_Panels.customColorPanel and UI_Panels.customColorPanel.Visible and not insideCustom then
