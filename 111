@@ -1,0 +1,404 @@
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+
+local function findExisting()
+    local existing = CoreGui:FindFirstChild("JoinLeaveNotifyUI")
+    if existing then
+        return existing
+    end
+    local playerGui = LocalPlayer:FindFirstChild("PlayerGui")
+    if playerGui then
+        return playerGui:FindFirstChild("JoinLeaveNotifyUI")
+    end
+    return nil
+end
+
+local existing = findExisting()
+if existing then
+    existing:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "JoinLeaveNotifyUI"
+screenGui.ResetOnSpawn = false
+screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+screenGui.DisplayOrder = 2147483647
+
+local parentSet = pcall(function()
+    screenGui.Parent = CoreGui
+end)
+if not parentSet then
+    screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 240, 0, 170)
+main.Position = UDim2.new(0.5, -120, 0.5, -85)
+main.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+main.BackgroundTransparency = 0.15
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.Parent = screenGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 10)
+corner.Parent = main
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -36, 0, 24)
+title.Position = UDim2.new(0, 10, 0, 6)
+title.BackgroundTransparency = 1
+title.Text = "进出服务器通知"
+title.TextColor3 = Color3.fromRGB(235, 235, 235)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = main
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 20, 0, 20)
+closeBtn.Position = UDim2.new(1, -26, 0, 6)
+closeBtn.BackgroundColor3 = Color3.fromRGB(200, 70, 70)
+closeBtn.BorderSizePixel = 0
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 14
+closeBtn.Parent = main
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 6)
+closeCorner.Parent = closeBtn
+
+local CONFIG_FILE = "join_leave_notify_config.json"
+local HttpService = game:GetService("HttpService")
+
+local defaultState = {
+    friendNotify = true,
+    allNotify = true,
+    notifyDuration = 3
+}
+local state = table.clone(defaultState)
+
+local function loadConfig()
+    pcall(function()
+        if isfile and isfile(CONFIG_FILE) then
+            local content = readfile(CONFIG_FILE)
+            local success, decoded = pcall(HttpService.JSONDecode, HttpService, content)
+            if success and type(decoded) == "table" then
+                for k, v in pairs(decoded) do
+                    state[k] = v
+                end
+                print("进服通知配置加载成功")
+            else
+                warn("进服通知配置解码失败")
+            end
+        else
+            warn("进服通知配置文件不存在")
+        end
+    end)
+end
+
+local function saveConfig()
+    pcall(function()
+        if writefile then
+            local success, encoded = pcall(HttpService.JSONEncode, HttpService, state)
+            if success then
+                writefile(CONFIG_FILE, encoded)
+                print("进服通知配置保存成功")
+            else
+                warn("进服通知配置编码失败")
+            end
+        else
+            warn("不支持 writefile")
+        end
+    end)
+end
+
+-- 加载配置
+loadConfig()
+
+local function formatName(plr)
+    if plr.DisplayName and plr.DisplayName ~= plr.Name then
+        return plr.DisplayName .. " (" .. plr.Name .. ")"
+    end
+    return plr.Name
+end
+
+-- 自定义通知函数
+local function notify(text, isFriend)
+    pcall(function()
+        local playerGui = LocalPlayer:WaitForChild("PlayerGui")
+        local duration = tonumber(state.notifyDuration) or 3
+        if duration < 1 then duration = 1 end
+        if duration > 60 then duration = 60 end
+        
+        -- 计算已有通知的数量
+        local existingCount = 0
+        for _, gui in pairs(playerGui:GetChildren()) do
+            if gui.Name:match("^JoinLeaveNotification_") then
+                existingCount = existingCount + 1
+            end
+        end
+        
+        -- 创建通知UI
+        local tipGui = Instance.new("ScreenGui")
+        tipGui.Name = "JoinLeaveNotification_" .. tostring(os.time())
+        tipGui.IgnoreGuiInset = true
+        tipGui.Parent = playerGui
+        
+        -- 背景框
+        local bg = Instance.new("Frame")
+        bg.Name = "Background"
+        bg.Size = UDim2.new(0, 300, 0, 50)
+        bg.Position = UDim2.new(1, 20, 1, -70 - (existingCount * 60)) 
+        bg.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        bg.BackgroundTransparency = 0.2
+        bg.BorderSizePixel = 0
+        
+        local bgCorner = Instance.new("UICorner")
+        bgCorner.CornerRadius = UDim.new(0, 8)
+        bgCorner.Parent = bg
+        
+        -- 添加边框
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = isFriend and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(200, 200, 200)
+        stroke.Transparency = 0.5
+        stroke.Thickness = 1
+        stroke.Parent = bg
+        
+        bg.Parent = tipGui
+        
+        -- 标题
+        local titleLabel = Instance.new("TextLabel")
+        titleLabel.Size = UDim2.new(1, -20, 0, 20)
+        titleLabel.Position = UDim2.new(0, 10, 0, 5)
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.Text = "服务器通知"
+        titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        titleLabel.TextSize = 14
+        titleLabel.Font = Enum.Font.GothamBold
+        titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        titleLabel.Parent = bg
+        
+        -- 通知文本
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, -20, 0, 20)
+        textLabel.Position = UDim2.new(0, 10, 0, 25)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = text
+        textLabel.TextColor3 = isFriend and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 255, 255)
+        textLabel.TextSize = 12
+        textLabel.Font = Enum.Font.Gotham
+        textLabel.TextXAlignment = Enum.TextXAlignment.Left
+        textLabel.Parent = bg
+        
+        -- 动画
+        -- 进入 (移动到屏幕内)
+        bg:TweenPosition(UDim2.new(1, -320, 1, -70 - (existingCount * 60)), Enum.EasingDirection.Out, Enum.EasingStyle.Back, 0.5, true)
+        
+        -- 停留后退出
+        task.delay(duration, function()
+            if bg and bg.Parent then
+                bg:TweenPosition(UDim2.new(1, 20, 1, -70 - (existingCount * 60)), Enum.EasingDirection.In, Enum.EasingStyle.Quad, 0.5, true, function()
+                    if tipGui then tipGui:Destroy() end
+                end)
+            end
+        end)
+    end)
+end
+
+local function isFriend(plr)
+    local ok, result = pcall(function()
+        return LocalPlayer:IsFriendsWith(plr.UserId)
+    end)
+    return ok and result
+end
+
+local function updateToggle(button, enabled)
+    button.Text = enabled and "开启" or "关闭"
+    button.BackgroundColor3 = enabled and Color3.fromRGB(70,170,90) or Color3.fromRGB(120,120,120)
+end
+
+local function createToggle(text, y, getter, setter)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -90, 0, 24)
+    label.Position = UDim2.new(0, 10, 0, y)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = main
+
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 60, 0, 22)
+    button.Position = UDim2.new(1, -72, 0, y + 1)
+    button.BorderSizePixel = 0
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 11
+    button.Parent = main
+    updateToggle(button, getter())
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 6)
+    btnCorner.Parent = button
+
+    button.MouseButton1Click:Connect(function()
+        local newValue = not getter()
+        setter(newValue)
+        updateToggle(button, newValue)
+        saveConfig()
+        print("设置更新: " .. text .. " -> " .. tostring(newValue))
+    end)
+end
+
+local function createDurationInput()
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -90, 0, 24)
+    label.Position = UDim2.new(0, 10, 0, 108)
+    label.BackgroundTransparency = 1
+    label.Text = "通知时长(秒)"
+    label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = main
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(0, 60, 0, 22)
+    textBox.Position = UDim2.new(1, -72, 0, 109)
+    textBox.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+    textBox.BorderSizePixel = 0
+    textBox.TextColor3 = Color3.new(1, 1, 1)
+    textBox.Font = Enum.Font.GothamBold
+    textBox.TextSize = 11
+    textBox.Text = tostring(state.notifyDuration or 3)
+    textBox.TextXAlignment = Enum.TextXAlignment.Center
+    textBox.Parent = main
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = textBox
+
+    textBox.FocusLost:Connect(function()
+        local newDuration = tonumber(textBox.Text)
+        if newDuration then
+            if newDuration < 1 then newDuration = 1 end
+            if newDuration > 60 then newDuration = 60 end
+            state.notifyDuration = newDuration
+            textBox.Text = tostring(newDuration)
+            saveConfig()
+        else
+            textBox.Text = tostring(state.notifyDuration or 3)
+        end
+    end)
+end
+
+createToggle("好友进退通知", 44, function() return state.friendNotify end, function(v) state.friendNotify = v end)
+createToggle("全体进退通知", 76, function() return state.allNotify end, function(v) state.allNotify = v end)
+createDurationInput()
+
+local connections = {}
+local function track(conn)
+    table.insert(connections, conn)
+end
+
+local function disconnectAll()
+    for _, conn in ipairs(connections) do
+        if conn and conn.Connected then
+            conn:Disconnect()
+        end
+    end
+end
+
+local function onPlayerAdded(plr)
+    if plr == LocalPlayer then
+        return
+    end
+    
+    local friend = isFriend(plr)
+    local playerName = formatName(plr)
+    
+    print("玩家进入: " .. playerName .. ", 是否好友: " .. tostring(friend) .. ", 好友通知开启: " .. tostring(state.friendNotify) .. ", 全体通知开启: " .. tostring(state.allNotify))
+    
+    -- 优先检查好友通知
+    if friend and state.friendNotify then
+        notify("好友进入服务器: " .. playerName, true)
+        return
+    end
+    
+    -- 然后检查全体通知
+    if state.allNotify then
+        notify("玩家进入服务器: " .. playerName, false)
+    end
+end
+
+local function onPlayerRemoving(plr)
+    if plr == LocalPlayer then
+        return
+    end
+    
+    local friend = isFriend(plr)
+    local playerName = formatName(plr)
+    
+    print("玩家退出: " .. playerName .. ", 是否好友: " .. tostring(friend) .. ", 好友通知开启: " .. tostring(state.friendNotify) .. ", 全体通知开启: " .. tostring(state.allNotify))
+    
+    -- 优先检查好友通知
+    if friend and state.friendNotify then
+        notify("好友退出服务器: " .. playerName, true)
+        return
+    end
+    
+    -- 然后检查全体通知
+    if state.allNotify then
+        notify("玩家退出服务器: " .. playerName, false)
+    end
+end
+
+track(Players.PlayerAdded:Connect(onPlayerAdded))
+track(Players.PlayerRemoving:Connect(onPlayerRemoving))
+
+closeBtn.MouseButton1Click:Connect(function()
+    disconnectAll()
+    screenGui:Destroy()
+end)
+
+-- 自动关闭逻辑
+local isAutoCloseEnabled = true
+
+-- 自动关闭计时器
+task.spawn(function()
+    task.wait(3)
+    if isAutoCloseEnabled and screenGui and screenGui.Parent then
+        screenGui:Destroy()
+    end
+end)
+
+-- 点击UI时取消自动关闭
+local function cancelAutoClose()
+    isAutoCloseEnabled = false
+end
+
+-- 为所有可交互控件添加点击事件
+main.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        cancelAutoClose()
+    end
+end)
+
+-- 为子控件添加点击事件
+for _, child in pairs(main:GetDescendants()) do
+    if child:IsA("GuiButton") then
+        child.MouseButton1Click:Connect(cancelAutoClose)
+    elseif child:IsA("TextBox") then
+        child.Focused:Connect(cancelAutoClose)
+    end
+end
+
+print("进服通知脚本已加载")
